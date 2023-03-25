@@ -19,7 +19,7 @@ The variables are for the database administrator, which is required for an API t
 
 A docker compose file is provided in this directory to try and launch locally the db instance alone, to do so execute then the folloing command from inside this directory:
 ```sh
-docker-compose --env-file ../env/example.db.env up --build -d
+docker-compose up --build -d
 ```
 
 To run in detatched mode the ```-d``` flag has been added.

@@ -8,6 +8,6 @@ services:
     volumes:
       - ./docker-entrypoint-initdb.d/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
       # - ./data/db:/data/db # Uncomment if you want this to save db state in local too.
-    # for test purposes not required
-    # env_file:
-    #   - .env
+    # This file is used as an example for environment variables.
+    env_file:
+      - ../env/example.db.env
