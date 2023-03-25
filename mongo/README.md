@@ -8,11 +8,11 @@ You are porovided an example dotenv file in ```${root}/env``` directory containi
 
 To see the environment variables to initialzie look [here](https://hub.docker.com/_/mongo/), following the example structure of the dotenv file:
 ```sh
-    MONGO_INITDB_ROOT_USERNAME=root
-    MONGO_INITDB_ROOT_PASSWORD=root
-    MONGO_INITDB_DATABASE=fastapi-auth-template
-    DB_ADMIN_USERNAME=admin
-    DB_ADMIN_PASSWORD=admin
+MONGO_INITDB_ROOT_USERNAME=root
+MONGO_INITDB_ROOT_PASSWORD=root
+MONGO_INITDB_DATABASE=fastapi-auth-template
+DB_ADMIN_USERNAME=admin
+DB_ADMIN_PASSWORD=admin
 ```
 
 The variables are for the database administrator, which is required for an API to make updates.
