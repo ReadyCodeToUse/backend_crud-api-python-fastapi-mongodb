@@ -22,5 +22,7 @@ A docker compose file is provided in this directory to try and launch locally th
 docker-compose --env-file ../env/example.db.env up --build -d
 ```
 
-
 To run in detatched mode the ```-d``` flag has been added.
+
+# Notes
+A directory named ```docker-enrtypoint-initdb.d``` is provided. This one contains some initialization scripts for mongo container creation and startup. More details can be searched in [here](https://hub.docker.com/_/mongo/).
