@@ -11,6 +11,15 @@ Here you can find informations and steps to start the project.
 To start this application some environement variables are required.
 Simply follow the next steps to generate the two required files.
 
+## DB
+Some operations may be required to fully understand this section, when completed make sure to read the following documentation [here](./mongo/README.md).
+
+For this step you can copy in the ```./env``` directory the ```./env/example.env``` as ```.db.env```, if you prefer type in your shell
+```sh
+$ cp ./env/example.db.env ./env/.db.env
+```
+the file can be copied without any changes.
+
 ## API
 Some operations may be required to fully understand this section, when completed make sure to read the following documentation [here](./fastapi/README.md).
 
@@ -39,15 +48,6 @@ As you can see there are two directories: configs and logging.
 This have been set by default to ```/app/something-else``` because in the composer file the container volumes will be mounted in those directories.
 
 An example file named ```example.api.env``` can be found in 
-
-## DB
-Some operations may be required to fully understand this section, when completed make sure to read the following documentation [here](./mongo/README.md).
-
-For this step you can copy in the ```./env``` directory the ```./env/example.env``` as ```.db.env```, if you prefer type in your shell
-```sh
-$ cp ./env/example.db.env ./env/.db.env
-```
-the file can be copied without any changes.
 
 
 ## Start the containers
