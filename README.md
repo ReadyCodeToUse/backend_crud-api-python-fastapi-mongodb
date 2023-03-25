@@ -26,11 +26,13 @@ Some operations may be required to fully understand this section, when completed
 For this step the ```./fastapi/scripts/init.sh``` script will be used.
 
 You can type ```$ ./fastapi/scripts/init.sh $(pwd)/env/.api.env``` to generate the file and provide the required inputs:
-- db username -> admin
-- db password -> admin
-- db host -> db (which is the db containers name)
-- db port -> 27017
-- db name -> fastapi-auth-template
+```sh
+admin # db username
+admin # db password 
+db # db host, hosted inside the "DB"
+27017 # db port
+fastapi-auth-template # db name
+```
 
 The produced file will be something similar to this:
 ```dotenv
