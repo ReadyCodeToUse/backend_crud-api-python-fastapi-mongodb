@@ -18,15 +18,17 @@ Some scripts are available in the ```scripts/``` directory they have different p
 - ```test.sh``` will install locally the src package contained inside the ```$(pwd)/api/``` directory to the be able to run the pytest tests contained inside the ```$(pwd)/tests/``` directory.
 
 ## Initialization
-To run the application some environement variables are required, it is possible to generate them via the ```init.sh``` script. You can simply type from the root of the repository
+To run the application some environement variables are required, it is possible to generate them via the ```init.sh``` script. To launch the script type from this directory:
 ```sh
-    $ chmod 777 ./scripts/init.sh && ./scripts/init.sh
+$ chmod 777 ./scripts/init.sh && ./scripts/init.sh $(pwd)/demo.env
 ```
-to launch the script. Arguments are required to run the script, the last one will be a ".env" file an absolute file path is required, it is not mandatory that it's an existing file because it will be generated if required.\
-The following naming convention has been decided:
-- ```.dev.env``` for the developement environement.
-- ```.test.env``` for the test environement (the only difference now are the variables for the DB connection like port, host and so on).
-
+You will be asked to type in some informations, assuming an instance of mnongdb is running from the described steps in the root README.md you can provide the following inputs to the script:
+```sh
+admin
+admin
+host.docker.internal
+fastapi-auth-template
+```
 
 ## Start-up
 The application is not containerized right now (it soon will), and to startup the developement environement 2 options are available:
@@ -66,15 +68,7 @@ which will make the script executable and then perform the action described at [
 To then execute the tests you can either run them from you IDE (VsCode in my case) or terminal with ```pytest --envfile=$(pwd)/env/.test.env``` this flag exists because of the ```pytest-dotenv``` plugin for pytest present in the requirements.txt file.
 
 # Docker
-A developement container is available in ```Docker``` folder. First build the image as follow from the repository root folder ```$ docker build -f ./Docker/Dockerfile.dev . -t fastapi_auth_template_api:0.0.0-dev```. After that you can run it by typing ```$ docker run --name fastapi_auth_template_api-0.0.0-dev -v $(pwd)/api/src:/app/src -v $(pwd)/configs:/app/configs -p 8000:8000 --env-file ./env/.container.dev.env --add-host=host.docker.internal:host-gateway -id fastapi_auth_template_api:0.0.0-dev```.
-
-Before doing that two things are required:
-- Having installed a MongoDB server instance (I installed mine usign a mongo docker image)
-- Generate a new .env file, and following the convention I decided when starting this repository the name I choosed is ```.container.dev.env```.
-
-To generate the .env file simply type in the shell ```$ ./scripts/init.sh container .container.dev.env``` this will tell the script that you want to generate a new .env file for a container, and by doing so the configs and log directory are setted by default, other than that the suggested db host will be ```host.docker.internal``` if you are using a db server installed on your machine (like a docker image of MongoDB).
-
-This container can be launched alone by it self, but we suggest to run it with docker compose when testing a complete application e.g. FE+BE+DB(coming soon).
+A developement container is available in ```Docker``` folder. First build the image as follow from the repository root folder ```$ docker build -f ./Docker/Dockerfile.dev . -t fastapi_auth_template_api:0.0.0-dev```. After that you can run it by typing ```$ docker run --name fastapi_auth_template_api-0.0.0-dev -v $(pwd)/api/src:/app/src -v $(pwd)/configs:/app/configs -p 8000:8000 --env-file .demo.env --add-host=host.docker.internal:host-gateway -id fastapi_auth_template_api:0.0.0-dev```.
 
 VSCode provide an extension ```Remote - Containers``` which will help build development containers, simply open the command palette and search for ```Open folder in container``` if is your first time creating one, otherwise if you already have a container search for ```Attach to running container```. This will generate a container container where you will be able to follo the [local development](#local-development) steps to configure the environment. A good thing of this extension is that the github repository is mounted as a volume, so the code will be modified directly on your machine and you will not need to do strange steps to sync the code in the container and your machine.
 
