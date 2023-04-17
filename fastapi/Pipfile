@@ -7,6 +7,8 @@ name = "pypi"
 
 [dev-packages]
 "fastapi[all]" = {version = ">=0.95.1"}
+pytest = {version = ">= 7.3"}
+api-src-cedrata = {editable = true, path = "."}
 
 [requires]
 python_version = "3.10"
