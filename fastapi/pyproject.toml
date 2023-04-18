@@ -2,7 +2,7 @@
 name = "api_src_cedrata"
 version = "0.0.1"
 authors = [
-    { name = "Luca Cedrata Greggio", email = "greggius9891@gmail.com },
+    { name = "Luca Cedrata Greggio", email = "luca.greggio@protonmail.com" }
 ]
 description = "Example of REST-API built with FastAPI"
 readme = "README.md"
