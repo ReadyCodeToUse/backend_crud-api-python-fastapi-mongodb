@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "11f359f5d4adcd69f85dcf9c84f84b34e93cdaa876d068b508cf0acf2a8752f0"
+            "sha256": "62a45a63deb1e49885fcba3bcb5e6b21d1475f33d3832484091d59a312fa1f47"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -340,11 +340,11 @@
         },
         "importlib-metadata": {
             "hashes": [
-                "sha256:63ace321e24167d12fbb176b6015f4dbe06868c54a2af4f15849586afb9027fd",
-                "sha256:eb1a7933041f0f85c94cd130258df3fb0dec060ad8c1c9318892ef4192c47ce1"
+                "sha256:03ba783c3a2c69d751b109fc0c94a62c51f581b3d6acf8ed1331b6d5729321ff",
+                "sha256:7a8bdf1bc3a726297f5cfbc999e6e7ff6b4fa41b26bba4afc580448624460045"
             ],
             "markers": "python_version >= '3.7'",
-            "version": "==6.4.1"
+            "version": "==6.5.0"
         },
         "iniconfig": {
             "hashes": [
@@ -722,6 +722,14 @@
             ],
             "index": "pypi",
             "version": "==7.3.1"
+        },
+        "pytest-asyncio": {
+            "hashes": [
+                "sha256:2b38a496aef56f56b0e87557ec313e11e1ab9276fc3863f6a7be0f1d0e415e1b",
+                "sha256:f2b3366b7cd501a4056858bd39349d5af19742aed2d81660b7998b6341c7eb9c"
+            ],
+            "index": "pypi",
+            "version": "==0.21.0"
         },
         "pytest-envfiles": {
             "hashes": [
