@@ -21,3 +21,7 @@ injector = {version = "~=0.20"}
 
 [requires]
 python_version = "3.10"
+
+[scripts]
+test = "python -m pytest"
+tests-list = "python -m pytest --co"

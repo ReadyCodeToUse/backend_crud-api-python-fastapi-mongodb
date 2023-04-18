@@ -21,6 +21,9 @@ testpaths = [
 env_files = [
     "./env/example.api.env"
 ]
+markers = [
+    "asyncio: mark a test for an async endpoint"
+]
 
 [build-system]
 requires = ["setuptools>=61.0"]
