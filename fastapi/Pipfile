@@ -6,8 +6,10 @@ name = "pypi"
 [packages]
 
 [dev-packages]
-"fastapi[all]" = {version = ">=0.95.1"}
-pytest = {version = ">= 7.3"}
+black = "latest"
+fastapi = {extras = ["all"], version = ">=0.95"}
+pytest = ">=7.3"
+uvicorn = {extras = ["standard"], version = ">=0.21"}
 api-src-cedrata = {editable = true, path = "."}
 
 [requires]
