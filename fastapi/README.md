@@ -1,21 +1,66 @@
 # FastAPI API tempalte
 This is an example of how to dockerize a python FastAPI REST API with auth.
 
-**Before doing anything make sure docker is installed!**
+This is an example python project to demonstate the following points:
+- python project structure example suitable for most projects
+- pytest and TDD (Test Driven Development)
+- containerization
+- use of python best practices (PEP8) (To be added)
+- pylint (To be added)
+- use of pre-commits (To be added)
+
+This demo contains a REST API built over FastAPI, this repository can be used as a starting point for other projects too and not only REST API. 
+
+## Before you start
+Make sure docker, pyenv and pipenv are installed, if you need any of this tools reefer to the following sources:
+- [pyenv](https://github.com/pypa/pipenv)
+- [pipenv](https://github.com/pypa/pipenv#installation) or, if you are usign MacOS you can also reefer to this [link](https://formulae.brew.sh/formula/pipenv)
+- [docker](https://docs.docker.com/engine/install/), if you are a Windows i suggest the use of WSL and installation via WSL engine
+
+## Development
+This section presents the development workflow and tools to work with this repository.
+
+### Project structure
+```shell
+.
+├── .env.example
+├── configs
+├── dockerfiles
+├── scripts
+├── src
+├── tests
+├── Pipfile
+├── Pipfile.lock
+├── README.md
+└── pyproject.toml
+```
+
+* `configs` contains configuration files for the application in order to run properly.
+* `dockerfiles` contains all the requried dockerfiles (if there is any)
+* `scripts` contains some scripts (if there is any) that can run within pipenv or that can be run with the shell (no rules here)
+* `src` contains the application package (documentation is provided with the use of docstrings inside of the code)
+* `tests` contains the test package to run with pytest
+* `Pipfile` and `Pipfile.lock` are files used by pipenv to manage the project and virtualenv
+* `pyproject.toml` is a file used to describe the python project and create the editable module to be tested or the actual module to be released to the public if required
+
+### Prepare the environment
+To prepare the development environment some steps are required, some commands inside the cli are required:
+* search the latest 3.10 available python version
+```shell
+    pyenv install --list | grep "3.10."
+```
+
+* install the latest python version python 3.10 
+```shell
+    pyenv isntall 3.10.x # replace the x with the latest fix number available
+```
+
+TO CONTINUE
+
 
 # General informations
 In this sections the general informations about the project are presented.
 To execute local developement simply follow the ahead steps, if you prefer develop within a container or docker compose(at the moment is not available) follow [this section](#docker)
-
-# Local development
-The following steps are used to prepare a local development environment, if you want to use docker to launch or develop [those steps](#docker) can be followed.
-
-## Scripts
-Some scripts are available in the ```scripts/``` directory they have different purposes:
-- ```freeze.sh``` will execute the ```pip freeze``` command but excluding local modules generated with ```test.sh```.
-- ```init.sh``` will check the project directory integrity and then create a ```.env``` file in the project root to then export the newly generated environement variables.
-- ```serve_dev.sh``` will run a uvicorn server in dev mode with reload detection. (If you are using visual studio code you can run add a configuration to run in debug mode the FastAPI application, just so you know, to simplify the development).
-- ```test.sh``` will install locally the src package contained inside the ```$(pwd)/api/``` directory to the be able to run the pytest tests contained inside the ```$(pwd)/tests/``` directory.
 
 ## Initialization
 To run the application some environement variables are required, it is possible to generate them via the ```init.sh``` script. You can simply type from the root of the repository
