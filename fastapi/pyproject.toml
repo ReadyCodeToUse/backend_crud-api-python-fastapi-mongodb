@@ -2,7 +2,7 @@
 name = "api_src_cedrata"
 version = "0.0.1"
 authors = [
-    { name = "Luca Cedrata Greggio", email = "luca.greggio@protonmail.com" }
+    { name = "Luca Cedrata Greggio", email = "luca.greggio@protonmail.com" },
 ]
 description = "Example of REST-API built with FastAPI"
 readme = "README.md"
@@ -15,15 +15,9 @@ classifiers = [
 
 [tool.pytest.ini_options]
 minversion = "7.0"
-testpaths = [
-    "tests"
-]
-env_files = [
-    "./env/example.api.env"
-]
-markers = [
-    "asyncio: mark a test for an async endpoint"
-]
+testpaths = ["tests"]
+env_files = ["./env/example.api.env"]
+markers = ["asyncio: mark a test for an async endpoint"]
 
 [build-system]
 requires = ["setuptools>=61.0"]
