@@ -13,7 +13,7 @@ This demo contains a REST API built over FastAPI, this repository can be used as
 
 ## Before you start
 Make sure docker, pyenv and pipenv are installed, if you need any of this tools reefer to the following sources:
-- [pyenv](https://github.com/pypa/pipenv)
+- [pyenv](https://github.com/pyenv/pyenv)
 - [pipenv](https://github.com/pypa/pipenv#installation) or, if you are usign MacOS you can also reefer to this [link](https://formulae.brew.sh/formula/pipenv)
 - [docker](https://docs.docker.com/engine/install/), if you are a Windows i suggest the use of WSL and installation via WSL engine
 
