@@ -134,4 +134,4 @@ $ pipenv run tests
 A `dotenv` for test is required under `./env/.env.test`, the configuration for pytest is included in `pyproject.toml` under the [tool.pytest.ini_options] table. You can change it to use whatever environemnt file you prefer. Just remember a running MongoDB instance is required to launch the tests.
 
 # Docker
-TODO
+For development the dockerization has been removed since pipenv provides all the required features I was searching for when upgrading to it. In future this section will be populated to add informations to deploy in a production environment.
