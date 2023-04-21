@@ -43,47 +43,69 @@ This section presents the development workflow and tools to work with this repos
 * `Pipfile` and `Pipfile.lock` are files used by pipenv to manage the project and virtualenv
 * `pyproject.toml` is a file used to describe the python project and create the editable module to be tested or the actual module to be released to the public if required
 
-### Prepare the environment
-To prepare the development environment some steps are required, some commands inside the cli are required:
-* search the latest 3.10 available python version
+### Prepare a local environment
+To prepare the development environment some steps are required, open your favourite terminal and execute the following commands:
+1. search the latest 3.10 available python version
 ```shell
-    pyenv install --list | grep "3.10."
+$ pyenv install --list | grep "3.10."
 ```
 
-* install the latest python version python 3.10 
+2. install the latest python version python 3.10 
 ```shell
-    pyenv isntall 3.10.x # replace the x with the latest fix number available
+# replace the x with the latest fix number available
+$ pyenv isntall 3.10.x
 ```
 
-TO CONTINUE
-
-
-# General informations
-In this sections the general informations about the project are presented.
-To execute local developement simply follow the ahead steps, if you prefer develop within a container or docker compose(at the moment is not available) follow [this section](#docker)
-
-## Initialization
-To run the application some environement variables are required, it is possible to generate them via the ```init.sh``` script. You can simply type from the root of the repository
-```sh
-    $ chmod 777 ./scripts/init.sh && ./scripts/init.sh
+3. set the local python version to use the one you have just installed
+```shell
+# replace the x with the latest fix number available
+$ pyenv local 3.10.x
 ```
-to launch the script. Arguments are required to run the script, the last one will be a ".env" file an absolute file path is required, it is not mandatory that it's an existing file because it will be generated if required.\
-The following naming convention has been decided:
-- ```.dev.env``` for the developement environement.
-- ```.test.env``` for the test environement (the only difference now are the variables for the DB connection like port, host and so on).
+this is going to create a file `.python-version`, this will be ignored because it has been included into the `.gitignore`
 
+4. it is now time to create the virtualenv with pipenv
+```shell
+$ pipenv install -d
+```
+doing this will install all of the required dependencies for the develoment environment. In alternative to install the production dependencies simply type
+```shell
+$ pipenv install
+```
 
-## Start-up
-The application is not containerized right now (it soon will), and to startup the developement environement 2 options are available:
-- Run from terminal
-- Run from IDE
+At this point if the execution ran succesfuly to check the virtualenv is correctly installed type
+```shell
+$ pienv run pip list
+```
+and as retur value you should see the installed modules for the virtualenv installed, its path can be retrived by typing
+```shell
+$ pipenv --venv
+```
 
-To run the application via terminal the ```serve_dev.sh``` script is available, simply execute it with ```$ chmod 777 ./scripts/serve_dev.sh && ./scripts/serve_dev.sh absolute/path/to/.dev.env```
+you can now open this folder in your preferred IDE/Text Editor and use the output of the last command to tell the IDE/Text Editor the correct interpreter and have hints while you type.
 
-Otherwise if you're using VsCode (I know it's not an IDE but a text editor really close to a IDE if customized), in the debug configuration you can add a new configuration for python programs, then a new menu is displayed where to chose the "FastAPI" application. A json file will be displayed, insert the following body, if required adapt it
+### Startup the application
+To startup this application a DB and a dotenv file are required, we are proceding to generate them right now.
+First of all the dotenv file can be created starting by the provided `.env.example` with
+```shell
+$ cp .env.example .env
+```
+at this point is required to change some of the environment variables:
+* `SECRET_KEY` which can be generated with
+```shell
+$ openssl rand -hex 32
+```
+* `LOGGING_DIR` and `CONFIGS_DIR` can be whatever absolute path in your machine, up to you.
+* If you already have a running instance of mongo to connect just use that (you can find and example of collection the API uses inside `../mongo/docker-entrypoint-intdb.d/mongo-init.js` script). Otherwise if you need one follow [this](../mongo/README.md) guide. When using the second option make sure to chanhge `DB_HOST=host.docker.internal`
+
+At this point you have 2 options to start a local server:
+1. Use a script that has been added to the Pipfile typing
+```shell
+$ pipenv run serve-dev
+```
+2. If you are using an IDE/Text Editor that supports visual breakpoints you can start it from there to have some more information about the debug. For Visual Studio Code in the debug configuration you can add a new configuration for python programs, then a new menu is displayed where to chose the "FastAPI" application. A json file will be displayed, insert the following body, if required adapt it
 ```json
-{ 
-    "name": "Python: FastAPI DEV",
+{
+    "name": "Python: FastAPI",
     "type": "python",
     "request": "launch",
     "module": "uvicorn",
@@ -92,36 +114,24 @@ Otherwise if you're using VsCode (I know it's not an IDE but a text editor reall
         "--reload"
     ],
     "jinja": true,
-    "justMyCode": false,
-    "envFile": "${workspaceFolder}/env/.dev.env"
+    "justMyCode": true,
+    "envFile": "${workspaceFolder}/.env"
 }
 ```
 
-by doing so yow will be able to run and insert debug points into the application and debug it visually.
-
-*TO RUN THE API WITH VSCODE IN THIS WAY YOU HAVE TO FOLLOW THE STEPS OF THE [Testing](#testing) section to build the module locally.*
-
 ## Testing
-To run the available unit tests inside ```$(pwd)/tests/``` run from your shell:
-```$ chmod 777 ./scripts/test.sh && ./scripts/test.sh $(pwd)```.
-This will install locally the ```src``` module inside the ```api``` directory.
+To include unit tests pytest is used, more informations on its usage are availabele [here](https://docs.pytest.org/en/7.3.x/)
+Two scripts for testing are included in this project with `Pipfile`:
+1. List only the tests
+```shell
+$ pipenv run tests-list
+```
 
-which will make the script executable and then perform the action described at [this section](#scripts).
-
-To then execute the tests you can either run them from you IDE (VsCode in my case) or terminal with ```pytest --envfile=$(pwd)/env/.test.env``` this flag exists because of the ```pytest-dotenv``` plugin for pytest present in the requirements.txt file.
+2. Run the tests
+```shell
+$ pipenv run tests
+```
+A `dotenv` for test is required under `./env/.env.test`, the configuration for pytest is included in `pyproject.toml` under the [tool.pytest.ini_options] table. You can change it to use whatever environemnt file you prefer. Just remember a running MongoDB instance is required to launch the tests.
 
 # Docker
-A developement container is available in ```Docker``` folder. First build the image as follow from the repository root folder ```$ docker build -f ./Docker/Dockerfile.dev . -t fastapi_auth_template_api:0.0.0-dev```. After that you can run it by typing ```$ docker run --name fastapi_auth_template_api-0.0.0-dev -v $(pwd)/api/src:/app/src -v $(pwd)/configs:/app/configs -p 8000:8000 --env-file ./env/.container.dev.env --add-host=host.docker.internal:host-gateway -id fastapi_auth_template_api:0.0.0-dev```.
-
-Before doing that two things are required:
-- Having installed a MongoDB server instance (I installed mine usign a mongo docker image)
-- Generate a new .env file, and following the convention I decided when starting this repository the name I choosed is ```.container.dev.env```.
-
-To generate the .env file simply type in the shell ```$ ./scripts/init.sh container .container.dev.env``` this will tell the script that you want to generate a new .env file for a container, and by doing so the configs and log directory are setted by default, other than that the suggested db host will be ```host.docker.internal``` if you are using a db server installed on your machine (like a docker image of MongoDB).
-
-This container can be launched alone by it self, but we suggest to run it with docker compose when testing a complete application e.g. FE+BE+DB(coming soon).
-
-VSCode provide an extension ```Remote - Containers``` which will help build development containers, simply open the command palette and search for ```Open folder in container``` if is your first time creating one, otherwise if you already have a container search for ```Attach to running container```. This will generate a container container where you will be able to follo the [local development](#local-development) steps to configure the environment. A good thing of this extension is that the github repository is mounted as a volume, so the code will be modified directly on your machine and you will not need to do strange steps to sync the code in the container and your machine.
-
-# Notes
-I presonally use pyenv combined with pyenv-virtualenv when developing in a local environement, outside of a container (if this can help someone), but now my workflow will be replaced with the container development thantks to Visual Studio Code, if you are using a different IDE/Text Editor and you want to contribute adding documentation for it don't hesitate to contact me and send me you workflow to integrate in here :smile:.
+TODO
