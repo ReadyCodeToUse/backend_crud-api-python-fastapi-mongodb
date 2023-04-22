@@ -10,4 +10,4 @@ services:
       # - ./data/db:/data/db # Uncomment if you want this to save db state in local too.
     # This file is used as an example for environment variables.
     env_file:
-      - ../env/example.db.env
+      - .env
