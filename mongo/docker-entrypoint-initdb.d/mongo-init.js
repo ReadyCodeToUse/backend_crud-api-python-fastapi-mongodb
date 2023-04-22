@@ -1,15 +1,12 @@
 print('################################################################# START #################################################################');
 
-// db = connect('mongodb://'+process.env.MONGO_INITDB_ROOT_USERNAME+':'+process.env.MONGO_INITDB_ROOT_PASSWORD+'@localhost:27017');
-db = connect('mongodb://' + _getEnv("MONGO_INITDB_ROOT_USERNAME") + ':' + _getEnv("MONGO_INITDB_ROOT_PASSWORD") + '@localhost:27017');
-
-db = db.getSiblingDB(_getEnv("MONGO_INITDB_DATABASE"))
+db = db.getSiblingDB(process.env.MONGO_INITDB_DATABASE)
 
 db.createUser(
 	{
-		user: _getEnv("DB_ADMIN_USERNAME"),
-		pwd: _getEnv("DB_ADMIN_PASSWORD"),
-		roles: [{ role: 'dbOwner', db: _getEnv("MONGO_INITDB_DATABASE") }]
+		user: process.env.DB_ADMIN_USERNAME,
+		pwd: process.env.DB_ADMIN_PASSWORD,
+		roles: [{ role: 'dbOwner', db: process.env.MONGO_INITDB_DATABASE }]
 	}
 )
 

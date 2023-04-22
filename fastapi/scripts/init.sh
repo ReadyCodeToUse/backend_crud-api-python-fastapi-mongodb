@@ -6,6 +6,11 @@
 # Currently this script runs under MacOS and Ubuntu-like distros (of course wsl
 # ubuntu too :)).
 # May not work for other distros.
+#
+#
+# THIS SCRIPT IS NO LONGER REQURIED FOR THIS VERSION BUT IT'S KEPT HERE 
+# HERE AS HISTORY TO ADD IN THE FUTURE A SIMILAR SCRIPT TO INCLUDE IN THE
+# Pipfile. THIS EFFORT IS USED FOR MORE IMPORTANT CHANGES IN THE CODEBASE.
 ################################################################################
 
 ################################################################################

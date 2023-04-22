@@ -1,0 +1,29 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+
+[dev-packages]
+api-src-cedrata = {editable = true, path = "."}
+beanie = {version = "1"}
+black = "latest"
+fastapi = {extras = ["all"], version = ">=0.95"}
+passlib = {extras = ["bcrypt"], version = "~=1.7"}
+pydantic-yaml = {version = "~=0.11"}
+pytest = ">=7.3"
+pytest-asyncio = {version = "~=0.20"}
+pytest-envfiles = {version = "~=0.1"}
+python-jose = {extras = ["cryptography"], version = "latest"}
+typesentry = "==0.2.7"
+uvicorn = {extras = ["standard"], version = ">=0.21"}
+injector = {version = "~=0.20"}
+
+[requires]
+python_version = "3.10"
+
+[scripts]
+tests = "python -m pytest -v"
+tests-list = "python -m pytest --co"
+serve-dev = "uvicorn src.app:fastapi_app --env-file .env --reload"

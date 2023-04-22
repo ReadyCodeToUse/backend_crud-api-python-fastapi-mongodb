@@ -1,28 +1,52 @@
 # Secured containerized MongoDB
 This is an example of how to dockerize and secure a mongo db instance.
 
-**Before doing anything make sure docker is installed!**
+## Before you start
+Make sure docker is installed, if you need to install it reefer to the [official documentation](https://docs.docker.com/engine/install/), if you are using Windows i suggest the use of WSL and installation via WSL engine.
 
-# Required steps
-You are porovided an example dotenv file in ```${root}/env``` directory containing some key values for the mongodb docker image to start correctly.
+##  Required steps
+Type in your shell:
+```shell
+$ cp .env.example .env
+``` 
+and then update the environement variables in it.
 
-To see the environment variables to initialzie look [here](https://hub.docker.com/_/mongo/), following the example structure of the dotenv file:
-```sh
-MONGO_INITDB_ROOT_USERNAME=root
-MONGO_INITDB_ROOT_PASSWORD=root
-MONGO_INITDB_DATABASE=fastapi-auth-template
-DB_ADMIN_USERNAME=admin
-DB_ADMIN_PASSWORD=admin
-```
+The following variables are the variables to initialize the mongo container as you can see [here](https://hub.docker.com/_/mongo/)
+- MONGO_INITDB_ROOT_USERNAME
+- MONGO_INITDB_ROOT_PASSWORD
+- MONGO_INITDB_DATABASE
 
 The variables are for the database administrator, which is required for an API to make updates.
 
-A docker compose file is provided in this directory to try and launch locally the db instance alone, to do so execute then the folloing command from inside this directory:
-```sh
-docker-compose up --build -d
+## Start the instance
+A docker compose file is provided in this directory to try and launch locally the db instance alone, to do so execute then the folloing command:
+```shell
+$ docker-compose up --build -d
 ```
 
 To run in detatched mode the ```-d``` flag has been added.
 
-# Notes
-A directory named ```docker-enrtypoint-initdb.d``` is provided. This one contains some initialization scripts for mongo container creation and startup. More details can be searched in [here](https://hub.docker.com/_/mongo/).
+When starting the mongodb instance will be initialized with the `docker-entrypoint-initdb.d/mongo-init.js` script. If any modification in the configuration, collection creation is required just update this scripts to fit your needs.
+
+A file `users.json` can be used to store some data to upload some data and not hardcode the informations inside the initialization script.
+## Stop the instance
+When you are done working and stop the instances there are two options:
+1. Stop the instance but keep the container up 
+```shell
+$ docker-compose stop
+```
+
+2. Stop the instance and delete the contaier
+```shell
+$ docker-compose down
+```
+
+**IMPORTANT** Both commands must be ran from this directory which contains the `docker-compose.yml` file.
+
+**IMPORTANT** By default the provided `docker-compose.yml` uses anonymus volumes to store the DB data, if you want to store it in a specific directory just uncomment `docker-compose.yml line 9`.
+
+**IMPORTANT** By default the provided `docker-compose.yml` uses anonymus volumes to store data, running the second command will not delete automatically the data (default docker behaviour). To free some some space up if the data is not required and can be deleted type from your command line
+```shell
+docker volumes prune
+```
+to delete all zombie volumes.
