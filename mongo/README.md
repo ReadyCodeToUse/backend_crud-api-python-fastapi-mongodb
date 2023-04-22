@@ -4,19 +4,18 @@ This is an example of how to dockerize and secure a mongo db instance.
 ## Before you start
 Make sure docker is installed, if you need to install it reefer to the [official documentation](https://docs.docker.com/engine/install/), if you are using Windows i suggest the use of WSL and installation via WSL engine.
 
+==!!!IMPORTANT!!!==
+Move inside the directory where this README is located to execute all of the commands in this README.md
+```shell
+$ cd %path-to-the-repository%/fastapi
+```
+
 ##  Required steps
 Type in your shell:
 ```shell
 $ cp .env.example .env
 ``` 
-and then update the environement variables in it.
-
-The following variables are the variables to initialize the mongo container as you can see [here](https://hub.docker.com/_/mongo/)
-- MONGO_INITDB_ROOT_USERNAME
-- MONGO_INITDB_ROOT_PASSWORD
-- MONGO_INITDB_DATABASE
-
-The variables are for the database administrator, which is required for an API to make updates.
+The contained variables are for the database administrator, required for an API to make updates.
 
 ## Start the instance
 A docker compose file is provided in this directory to try and launch locally the db instance alone, to do so execute then the folloing command:
