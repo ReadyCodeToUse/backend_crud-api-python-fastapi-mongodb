@@ -1,4 +1,4 @@
-# FastAPI API tempalte
+# FastAPI API template
 This is an example of how to dockerize a python FastAPI REST API with auth.
 
 This is an example python project to demonstate the following points:
@@ -20,7 +20,7 @@ Make sure docker, pyenv and pipenv are installed, if you need any of this tools 
 ## Development
 This section presents the development workflow and tools to work with this repository.
 
-==!!!IMPORTANT!!!==
+**!!!IMPORTANT!!!**
 Move inside the directory where this README is located to execute all of the commands in this README.md
 ```shell
 $ cd %path-to-the-repository%/fastapi
@@ -65,7 +65,7 @@ $ pipenv install -d
 
 At this point if the execution ran succesfuly to check the virtualenv is correctly installed type
 ```shell
-$ pienv run pip list
+$ pipenv run pip list
 ```
 and as retur value you should see the installed modules for the virtualenv installed, its path can be retrived by typing
 ```shell
