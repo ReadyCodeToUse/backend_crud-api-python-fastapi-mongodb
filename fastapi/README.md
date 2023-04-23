@@ -53,12 +53,22 @@ $ cd %path-to-the-repository%/fastapi
 
 ### Prepare a local environment
 To prepare the development environment some steps are required, open your favourite terminal and execute the following commands:
-1. search install and activate locally the latest python version 
+1. return the latest python 3.10 version and store it to an environment variable
 ```shell
-$ pyenv install --list | xargs | grep -E "\s3\.10\.[0-9]+" -o | xargs | rev | cut -d " " -f1 | rev | read TOINSTALLPYTHON | pyenv install -s $TOINSTALLPYTHON | pyenv local $TOINSTALLPYTHON
+$ pyenv install --list | xargs | grep -E "\s3\.10\.[0-9]+" -o | xargs | rev | cut -d " " -f1 | rev | read PYENV_TO_INSTALL
 ```
 
-2. it is now time to create the virtualenv with pipenv
+2. install the latest python 3.10 version
+```shell
+$ pyenv install -s $PYENV_TO_INSTALL
+```
+
+3. activate the installed python version
+```shell
+$ pyenv local $PYENV_TO_INSTALL
+```
+
+4. it is now time to create the virtualenv with pipenv
 ```shell
 $ pipenv install -d
 ```
