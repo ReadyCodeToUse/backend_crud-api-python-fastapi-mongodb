@@ -4,10 +4,10 @@ This is an example of how to dockerize and secure a mongo db instance.
 ## Before you start
 Make sure docker is installed, if you need to install it reefer to the [official documentation](https://docs.docker.com/engine/install/), if you are using Windows i suggest the use of WSL and installation via WSL engine.
 
-==!!!IMPORTANT!!!==
+**!!!IMPORTANT!!!**
 Move inside the directory where this README is located to execute all of the commands in this README.md
 ```shell
-$ cd %path-to-the-repository%/fastapi
+$ cd %path-to-the-repository%/mongo
 ```
 
 ##  Required steps
