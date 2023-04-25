@@ -114,6 +114,9 @@ At this point you have you can start the application:
 ```shell
 $ pipenv run serve-dev
 ```
+
+After the server started you can access to the [swagger](http://localhost:8000/docs) or [redoc](http://localhost:8000/redoc) documentation to try the provided API.
+
 Alternatively if you are using an IDE/Text Editor that supports visual breakpoints you can start it from there to have some more information about the debug. For Visual Studio Code in the debug configuration you can add a new configuration for python programs, then a new menu is displayed where to chose the "FastAPI" application. A json file will be displayed, insert the following body, if required adapt it
 ```json
 {
