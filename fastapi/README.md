@@ -60,12 +60,17 @@ $ pyenv install --list | xargs | grep -E "\s3\.10\.[0-9]+" -o | xargs | rev | cu
 
 2. install the latest python 3.10 version
 ```shell
-$ pyenv install -s $PYENV_TO_INSTALL
+$ pyenv install -s $CDRT_PYENV_TO_INSTALL
 ```
 
 3. activate the installed python version
 ```shell
-$ pyenv local $PYENV_TO_INSTALL
+$ pyenv local $CDRT_PYENV_TO_INSTALL
+```
+
+4. unset the generated environment variable
+```shell
+$ unset $CDRT_PYENV_TO_INSTALL
 ```
 
 4. it is now time to create the virtualenv with pipenv
