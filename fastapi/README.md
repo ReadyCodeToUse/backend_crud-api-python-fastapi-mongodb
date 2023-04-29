@@ -1,7 +1,7 @@
 # FastAPI API template
 This is an example of how to dockerize a python FastAPI REST API with auth.
 
-This is an example python project to demonstate the following points:
+This is an example python project to demonstrate the following points:
 - python project structure example suitable for most projects
 - pytest and Test Driven Development (TDD)
 - containerization (To be added)
@@ -12,10 +12,10 @@ This is an example python project to demonstate the following points:
 This demo contains a REST API built over FastAPI, this repository can be used as a starting point for other projects too and not only REST API. 
 
 ## Before you start
-Make sure docker, pyenv and pipenv are installed, if you need any of this tools reefer to the following sources:
+Make sure docker, pyenv and pipenv are installed, if you need any of this tools refer to the following sources:
 - [pyenv](https://github.com/pyenv/pyenv)
-- [pipenv](https://github.com/pypa/pipenv#installation) or, if you are usign MacOS you can also reefer to this [link](https://formulae.brew.sh/formula/pipenv)
-- [docker](https://docs.docker.com/engine/install/), if you are a Windows i suggest the use of WSL and installation via WSL engine
+- [pipenv](https://github.com/pypa/pipenv#installation) or, if you are using MacOS you can also refer to this [link](https://formulae.brew.sh/formula/pipenv)
+- [docker](https://docs.docker.com/engine/install/), if you are using Windows i suggest the use of WSL and installation via WSL engine
 
 ## Development
 This section presents the development workflow and tools to work with this repository.
@@ -42,8 +42,8 @@ $ cd %path-to-the-repository%/fastapi
 ```
 
 * `configs` contains configuration files for the application in order to run properly.
-* `dockerfiles` contains all the requried dockerfiles (if there is any)
-* `scripts` contains some scripts (if there is any) that can run within pipenv or that can be run with the shell (no rules here)
+* `dockerfiles` contains all the required dockerfiles (if there are any)
+* `scripts` contains some scripts (if there are any) that can run within pipenv or that can be run with the shell (no rules here)
 * `src` contains the application package (documentation is provided with the use of docstrings inside of the code)
 * `tests` contains the test package to run with pytest
 * `Pipfile` and `Pipfile.lock` are files used by pipenv to manage the project and virtualenv
@@ -55,22 +55,22 @@ $ cd %path-to-the-repository%/fastapi
 To prepare the development environment some steps are required, open your favourite terminal and execute the following commands:
 1. return the latest python 3.10 version and store it to an environment variable
 ```shell
-$ pyenv install --list | xargs | grep -E "\s3\.10\.[0-9]+" -o | xargs | rev | cut -d " " -f1 | rev | read PYENV_TO_INSTALL
+$ pyenv install --list | grep -E "\s3\.10\.[0-9]+" -o | sort -nrk 3 -t . | head -n 1 | read PYENV_TO_INSTALL
 ```
 
 2. install the latest python 3.10 version
 ```shell
-$ pyenv install -s $CDRT_PYENV_TO_INSTALL
+$ pyenv install -s $PYENV_TO_INSTALL
 ```
 
 3. activate the installed python version
 ```shell
-$ pyenv local $CDRT_PYENV_TO_INSTALL
+$ pyenv local $PYENV_TO_INSTALL
 ```
 
 4. unset the generated environment variable
 ```shell
-$ unset $CDRT_PYENV_TO_INSTALL
+$ unset PYENV_TO_INSTALL
 ```
 
 4. it is now time to create the virtualenv with pipenv
@@ -82,7 +82,7 @@ At this point if the execution ran succesfuly to check the virtualenv is correct
 ```shell
 $ pipenv run pip list
 ```
-and as retur value you should see the installed modules for the virtualenv installed, its path can be retrived by typing
+and as return value you should see the installed modules for the virtualenv installed, its path can be retrieved by typing
 ```shell
 $ pipenv --venv
 ```
@@ -90,13 +90,13 @@ $ pipenv --venv
 you can now open this folder in your preferred IDE/Text Editor and use the output of the last command to tell the IDE/Text Editor the correct interpreter and have hints while you type.
 
 ### Startup the application
-To startup this application a MongoDB instance and a dotenv file are required, we are proceding to generate them right now.
+To startup this application a MongoDB instance and a dotenv file are required, we are proceeding to generate them right now.
 First of all the dotenv file can be created starting by the provided `.env.example` with
 ```shell
 $ cp .env.example .env
 ```
 at this point is required to change some of the environment variables in it:
-* `SECRET_KEY` to sign the JWT is use which can be generated with
+* `SECRET_KEY` to sign the JWT in use which can be generated with
 ```shell
 $ openssl rand -hex 32
 ```
@@ -107,7 +107,7 @@ $ echo $(pwd)/configs
 ```
 * Variables starting with `DB_` are used to execute the connection to the MongoDB instance, do not modify.
 
-At this point you have you can start the application:
+At this point you can start the application:
 1. Start the MongoDB instance, follow the described steps in [here](../mongo/README.md)
 
 2. Use a script that has been added to the Pipfile typing
@@ -135,7 +135,7 @@ Alternatively if you are using an IDE/Text Editor that supports visual breakpoin
 ```
 
 ## Testing
-To include unit tests pytest is used, more informations on its usage are availabele [here](https://docs.pytest.org/en/7.3.x/)
+To include unit tests pytest is used, more information on its usage is available [here](https://docs.pytest.org/en/7.3.x/)
 
 
 Two scripts for testing are included in this project with `Pipfile`:
