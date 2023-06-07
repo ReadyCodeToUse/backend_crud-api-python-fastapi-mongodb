@@ -15,5 +15,6 @@ fastapi_app.include_router(user_router, prefix="/user", tags=["User"])
 
 @fastapi_app.on_event("startup")
 async def app_init():
+    """Application initialization, launghed on startup state"""
     # Execute db connection.
     await build_client()

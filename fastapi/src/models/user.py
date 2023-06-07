@@ -24,7 +24,8 @@ class BaseUsername(BaseModel):
             username (str): username to validate.
 
         Raises:
-            ValueError: Raised when username contains different chars form: alfanumerical, underscores and dots.
+            ValueError: Raised when username contains different chars form: alfanumerical,
+             underscores and dots.
 
         Returns:
             str: validated username.
@@ -34,7 +35,8 @@ class BaseUsername(BaseModel):
         match = pattern.fullmatch(username)
         if match is None:
             raise ValueError(
-                "The username validation was not succesful, the username can only contain alfanumerical chars underscores and dots."
+                "The username validation was not succesful,"
+                " the username can only contain alfanumerical chars underscores and dots."
             )
         return username
 

@@ -285,6 +285,7 @@ async def test_register_admin_duplicate_username():
 
 @pytest.mark.asyncio
 async def test_get_all_users():
+    """Test get all users db call."""
 
     # DB connection.
     await build_db_client()
@@ -309,6 +310,7 @@ async def test_get_all_users():
 
 @pytest.mark.asyncio
 async def test_get_all_user_as_admin():
+    """Test get all user from adim user, should expect more details"""
 
     # DB connection.
     await build_db_client()
@@ -334,6 +336,7 @@ async def test_get_all_user_as_admin():
 
 @pytest.mark.asyncio
 async def test_get_users_count():
+    """Test get user count"""
 
     # DB connection.
     await build_db_client()
@@ -355,6 +358,7 @@ async def test_get_users_count():
 
 @pytest.mark.asyncio
 async def test_get_user_by_id_username():
+    """Test get user by id username"""
 
     # DB connection.
     await build_db_client()
@@ -382,6 +386,7 @@ async def test_get_user_by_id_username():
 
 @pytest.mark.asyncio
 async def test_get_user_by_id_username_as_admin():
+    """Test get user by id username as admin"""
 
     # DB connection.
     await build_db_client()
@@ -409,6 +414,7 @@ async def test_get_user_by_id_username_as_admin():
 
 @pytest.mark.asyncio
 async def test_get_current_user():
+    """Test get current user"""
 
     # DB connection.
     await build_db_client()
@@ -438,6 +444,7 @@ async def test_get_current_user():
 
 @pytest.mark.asyncio
 async def test_update_user():
+    """Test update user"""
 
     # DB connection.
     await build_db_client()
@@ -469,6 +476,7 @@ async def test_update_user():
 
 @pytest.mark.asyncio
 async def test_update_user_bad_user():
+    """Test update user with bad user informations"""
 
     # DB connection.
     await build_db_client()
@@ -495,6 +503,7 @@ async def test_update_user_bad_user():
 
 @pytest.mark.asyncio
 async def test_update_user_bad_roles():
+    """Test udpate user with bad roles"""
 
     # DB connection.
     await build_db_client()
@@ -521,6 +530,7 @@ async def test_update_user_bad_roles():
 
 @pytest.mark.asyncio
 async def test_update_user_admin():
+    """Test udpate user admin"""
 
     # DB connection.
     await build_db_client()
@@ -553,6 +563,7 @@ async def test_update_user_admin():
 
 @pytest.mark.asyncio
 async def test_update_user_admin_missing():
+    """Test update user admin whose user not presetn"""
     # Try to update an user that does not exists.
 
     # DB connection.
@@ -580,6 +591,7 @@ async def test_update_user_admin_missing():
 
 @pytest.mark.asyncio
 async def test_update_user_duplicate_uername_or_email():
+    """Test update user duplicate using already existing username or email"""
 
     # DB connection.
     await build_db_client()
@@ -606,6 +618,7 @@ async def test_update_user_duplicate_uername_or_email():
 
 @pytest.mark.asyncio
 async def test_delete_user():
+    """Test user deletion"""
 
     # DB connection.
     await build_db_client()
@@ -633,6 +646,7 @@ async def test_delete_user():
 
 @pytest.mark.asyncio
 async def test_delte_user_bad_user():
+    """Test bad user deletion"""
 
     # DB connection.
     await build_db_client()
@@ -654,6 +668,7 @@ async def test_delte_user_bad_user():
 
 @pytest.mark.asyncio
 async def test_delete_user_admin():
+    """Test delete user admin"""
 
     # DB connection.
     await build_db_client()
@@ -681,7 +696,7 @@ async def test_delete_user_admin():
 
 @pytest.mark.asyncio
 async def test_delete_user_admin_missing():
-    # Try to delete an user that does not exists.
+    """Test deleting admin user whose does not exists"""
 
     # DB connection.
     await build_db_client()
@@ -703,6 +718,7 @@ async def test_delete_user_admin_missing():
 
 @pytest.mark.asyncio
 async def test_delete_last_admin():
+    """Test deleting last admin, should result in failure"""
 
     # DB connection.
     await build_db_client()

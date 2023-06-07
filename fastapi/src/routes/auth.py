@@ -35,7 +35,10 @@ _LOGIN_POST_PARAMS: Final[Dict[Endpoint, Any]] = {
             "description": "An errorr occured during the token creation",
         },
     },
-    Endpoint.DESCRIPTION: "Authenticate an user given username and password to return a set of access and refresh tokens after a succesful validation.",
+    Endpoint.DESCRIPTION: (
+        "Authenticate an user given username and password to returns "
+        "a set of access and refresh tokens after a succesful validation."
+    ),
 }
 
 
@@ -132,18 +135,27 @@ _REFRESH_POST_PARAMS: Final[Dict[Endpoint, Any]] = {
     Endpoint.RESPONSES: {
         status.HTTP_401_UNAUTHORIZED: {
             "model": HttpExceptionMessage,
-            "description": "The token contains informations of unexisting user which is not in the database.",
+            "description": (
+                "The token contains informations of unexisting user which is not in the database."
+            ),
         },
         status.HTTP_403_FORBIDDEN: {
             "model": HttpExceptionMessage,
-            "description": "Unsuccesfull refresh, the token may be expired, invalid or not a refresh token.",
+            "description": (
+                "Unsuccesfull refresh, the token may be expired, "
+                "invalid or not a refresh token."
+            ),
         },
         status.HTTP_500_INTERNAL_SERVER_ERROR: {
             "model": HttpExceptionMessage,
             "description": "An error occured while refreshing the token",
         },
     },
-    Endpoint.DESCRIPTION: "Token refresh route to provide a new set of access and refresh token. The new set will be generated from the refresh token, if this one is expired then login is newly required.",
+    Endpoint.DESCRIPTION: (
+        "Token refresh route to provide a new set of access and refresh token. "
+        "The new set will be generated from the refresh token, "
+        "if this one is expired then login is newly required."
+    ),
 }
 
 

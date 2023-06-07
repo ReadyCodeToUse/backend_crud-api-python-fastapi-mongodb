@@ -51,6 +51,7 @@ def hash_password(password: str) -> str:
 
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
+    """Verify password is correct"""
     return _PWD_CONTEX.verify(plain_password, hashed_password)
 
 
@@ -61,7 +62,8 @@ def create_token(
     secret_key: str,
     algorithm: str,
 ) -> str:
-    """Return a token for the given data, this function can be used to return both access and refresh tokens.
+    """Return a token for the given data.
+    This function can be used to return both access and refresh tokens.
     !!!IMPORTANT!!!
     If "data" argument contains a password make sure it is hashed and not plain!!!
     The password should not be contained in the token anyway.
@@ -111,14 +113,18 @@ def decode_token(encoded_token: str) -> dict:
         msg = "The provided token is invalid, or cyphered with a different key."
         raise DecodeTokenError(loggable=str(e), msg=msg) from e
     except Exception as e:
-        msg = "An unknown error occured while decoding the token, make sure you are passing a valid and not expired token."
+        msg = (
+            "An unknown error occured while decoding the token, "
+            "make sure you are passing a valid and not expired token."
+        )
         raise DecodeTokenError(loggable=str(e), msg=msg) from e
 
     return decoded_token
 
 
 def valid_token(decoded_token: dict) -> bool:
-    """This function will say if the keys present inside the decoded_token are the same that is expected to have a valid token.
+    """This function will say if the keys present inside the decoded_token
+    are the same that is expected to have a valid token.
 
     Args:
         decoded_token (dict): decoded token in form of dictionary.
@@ -132,7 +138,8 @@ def valid_token(decoded_token: dict) -> bool:
 
 
 def valid_refresh_token(decoded_token: dict) -> bool:
-    """This function will see if the token structure (present keys) are valid to then check if the "is_refresh" key is set to true.
+    """This function will see if the token structure (present keys)
+    are valid to then check if the "is_refresh" key is set to true.
 
     Args:
         decoded_token (dict): decoded token in form of dictionary.
@@ -148,7 +155,8 @@ def valid_refresh_token(decoded_token: dict) -> bool:
 
 
 def valid_access_token(decoded_token: dict) -> bool:
-    """This function will see if the token structure (present keys) are valid to then check if the "is_refresh" key is set to false.
+    """This function will see if the token structure (present keys)
+    are valid to then check if the "is_refresh" key is set to false.
 
     Args:
         decoded_token (dict): decoded token in form of dictionary.
@@ -164,7 +172,8 @@ def valid_access_token(decoded_token: dict) -> bool:
 
 
 def has_roles(user_roles: List[Role], required_roles: List[Role]) -> bool:
-    """This function will check efficiently if the user roles have at least one of the required roles.
+    """This function will check efficiently if the user roles have
+    at least one of the required roles.
 
     Args:
         user_roles (List[Role]): user roles.

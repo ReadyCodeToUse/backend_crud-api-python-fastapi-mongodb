@@ -13,9 +13,15 @@ from src.core.auth import hash_password, is_admin, is_authorized, require_admin
 from src.db.collections.user import User as UserCollection
 from src.helpers.container import CONTAINER
 from src.models.commons import BaseMessage, HttpExceptionMessage
-from src.models.user import (CurrentUserDetails, Role, UpdateUserDetails,
-                             UserPartialDetails, UserPartialDetailsAdmin,
-                             UserRegistration, UserRegistrationAdmin)
+from src.models.user import (
+    CurrentUserDetails,
+    Role,
+    UpdateUserDetails,
+    UserPartialDetails,
+    UserPartialDetailsAdmin,
+    UserRegistration,
+    UserRegistrationAdmin,
+)
 from src.routes.enums.commons import Endpoint
 from src.services.logger.interfaces.i_logger import ILogger
 
@@ -34,7 +40,10 @@ _REGISTER_POST_PARAMS: Final[Dict[Endpoint, Any]] = {
             "description": "An unknown error occured while registering the user",
         },
     },
-    Endpoint.DESCRIPTION: "User registration for basic user, this will set the default user role to 'user', to let the use chose the roles use the /register-admin endpoint",
+    Endpoint.DESCRIPTION: (
+        "User registration for basic user, this will set the default user role to 'user', "
+        "to let the use chose the roles use the /register-admin endpoint"
+    ),
 }
 
 
@@ -75,6 +84,7 @@ async def register(user_registration: UserRegistration):
         raise HTTPException(status.HTTP_409_CONFLICT, detail=msg) from e
     except Exception as e:
         logger.error("routes", str(e))
+        print(e)
         msg = "An unknown exception occured, maybe bad db connection"
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg) from e
 
@@ -83,7 +93,7 @@ async def register(user_registration: UserRegistration):
 
     logger.info(
         "routes",
-        f"The user having username {user_registration.username} has been succesully added to the db.",
+        f"The user having username {user_registration.username} has been added to the db.",
     )
     return JSONResponse(status_code=status_code, content=jsonable_encoder(response))
 
@@ -93,11 +103,13 @@ _REGISTER_ADMIN_POST_PARAMS: Final[Dict[Endpoint, Any]] = {
     Endpoint.RESPONSES: {
         status.HTTP_401_UNAUTHORIZED: {
             "model": HttpExceptionMessage,
-            "description": "Unauthorized",  # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
+            # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
+            "description": "Unauthorized",
         },
         status.HTTP_403_FORBIDDEN: {
             "model": HttpExceptionMessage,
-            "description": f"Forbidden access, {Role.ADMIN} role required",  # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
+            # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
+            "description": f"Forbidden access, {Role.ADMIN} role required",
         },
         status.HTTP_409_CONFLICT: {
             "model": HttpExceptionMessage,
@@ -108,7 +120,12 @@ _REGISTER_ADMIN_POST_PARAMS: Final[Dict[Endpoint, Any]] = {
             "description": "An unknown error occured while registering the user",
         },
     },
-    Endpoint.DESCRIPTION: "User registration for admin, this will let the user chose the roles, at least one role is required.This endpoint execution is limited to users having the admin role. This endpoint execution is limited to users having the admin role.",
+    Endpoint.DESCRIPTION: (
+        "User registration for admin, this will let the user chose the roles, "
+        "at least one role is required.This endpoint execution is "
+        "limited to users having the admin role. "
+        "This endpoint execution is limited to users having the admin role."
+    ),
     Endpoint.DEPENDENCIES: [Depends(require_admin)],
     # Endpoint.TAGS: [Role.ADMIN.value.capitalize()],
 }
@@ -183,18 +200,23 @@ _GET_ALL_USERS_PARAMS: Final[Dict[Endpoint, Any]] = {
     Endpoint.RESPONSES: {
         status.HTTP_401_UNAUTHORIZED: {
             "model": HttpExceptionMessage,
-            "description": "Unauthorized",  # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
+            # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
+            "description": "Unauthorized",
         },
         status.HTTP_403_FORBIDDEN: {
             "model": HttpExceptionMessage,
-            "description": f"Forbidden access, {Role.ADMIN} role required",  # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
+            # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
+            "description": f"Forbidden access, {Role.ADMIN} role required",
         },
         status.HTTP_500_INTERNAL_SERVER_ERROR: {
             "model": HttpExceptionMessage,
             "description": "An unknown error occured while registering the user",
         },
     },
-    Endpoint.DESCRIPTION: "Get all users with parial details from the db. If needed is possible to limit returned entities and skip the required amount",
+    Endpoint.DESCRIPTION: (
+        "Get all users with parial details from the db. "
+        "If needed is possible to limit returned entities and skip the required amount"
+    ),
 }
 
 
@@ -257,11 +279,13 @@ _GET_USERS_COUNT_PARAMS: Final[Dict[Endpoint, Any]] = {
     Endpoint.RESPONSES: {
         status.HTTP_401_UNAUTHORIZED: {
             "model": HttpExceptionMessage,
-            "description": "Unauthorized",  # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
+            # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
+            "description": "Unauthorized",
         },
         status.HTTP_403_FORBIDDEN: {
             "model": HttpExceptionMessage,
-            "description": f"Forbidden access, {Role.ADMIN} role required",  # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
+            # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
+            "description": f"Forbidden access, {Role.ADMIN} role required",
         },
         status.HTTP_500_INTERNAL_SERVER_ERROR: {
             "model": HttpExceptionMessage,
@@ -321,14 +345,18 @@ _GET_USER_BY_ID_PARAMS: Final[Dict[Endpoint, Any]] = {
     Endpoint.RESPONSES: {
         status.HTTP_401_UNAUTHORIZED: {
             "model": HttpExceptionMessage,
-            "description": "Unauthorized",  # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
+            # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
+            "description": "Unauthorized",
         },
         status.HTTP_500_INTERNAL_SERVER_ERROR: {
             "model": HttpExceptionMessage,
             "description": "An unknown error occured while retriving the user",
         },
     },
-    Endpoint.DESCRIPTION: "Get user parial details from the db given the username. To get full details run admin endpoint.",
+    Endpoint.DESCRIPTION: (
+        "Get user parial details from the db given the username."
+        " To get full details run admin endpoint."
+    ),
 }
 
 
@@ -449,7 +477,9 @@ _PUT_USER_BY_USERNAME_PARAMS: Final[Dict[Endpoint, Any]] = {
             "description": "An unknown error occured while retriving the user",
         },
     },
-    Endpoint.DESCRIPTION: "Update user given the username in path and user with updated fields in body.",
+    Endpoint.DESCRIPTION: (
+        "Update user given the username in path and user with updated fields in body."
+    ),
 }
 
 
@@ -473,7 +503,8 @@ async def put_user_by_username(
         logger.info("routes", "The user is not authenticated.")
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
 
-    # Check if user is not admin that the user in the decoded token is equal to the given one in the endpoint path.
+    # Check if user is not admin that the user in the decoded token
+    # is equal to the given one in the endpoint path.
     if not is_admin_result[1] and username != is_admin_result[2]["username"]:
         logger.info("routes", "The user has not right to update a different user.")
         raise HTTPException(status.HTTP_403_FORBIDDEN)
@@ -529,7 +560,9 @@ _DELETE_USER_BY_USERNAME_PARAMS: Final[Dict[Endpoint, Any]] = {
             "description": "An unknown error occured while retriving the user",
         },
     },
-    Endpoint.DESCRIPTION: "Update user given the username in path and user with updated fields in body.",
+    Endpoint.DESCRIPTION: (
+        "Update user given the username in path and user with updated fields in body."
+    ),
 }
 
 
@@ -552,7 +585,8 @@ async def delete_user_by_username(
         logger.info("routes", "The user is not authenticated.")
         raise HTTPException(status.HTTP_401_UNAUTHORIZED)
 
-    # Check if user is not admin that the user in the decoded token is equal to the given one in the endpoint path.
+    # Check if user is not admin that the user in the decoded token
+    # is equal to the given one in the endpoint path.
     if not is_admin_result[1] and username != is_admin_result[2]["username"]:
         logger.info("routes", "The user has not right to update a different user.")
         raise HTTPException(status.HTTP_403_FORBIDDEN)
