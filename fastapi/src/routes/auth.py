@@ -2,12 +2,13 @@ from datetime import timedelta
 from os import environ
 from typing import Any, Dict, Final
 
+from jose.exceptions import JWTError
+from pydantic import BaseModel
+
 from fastapi import APIRouter, Depends, Header, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from fastapi.security import OAuth2PasswordRequestForm
-from jose.exceptions import JWTError
-from pydantic import BaseModel
 from src.core import auth
 from src.core.exceptions import DecodeTokenError, ValidateTokenError
 from src.db.collections import user as db_user
@@ -47,6 +48,7 @@ _LOGIN_POST_PARAMS: Final[Dict[Endpoint, Any]] = {
 async def login(
     request_form: OAuth2PasswordRequestForm = Depends(),
 ):
+    # pylint: disable=missing-function-docstring
     logger = CONTAINER.get(ILogger)
     response: BaseModel
     status_code: int
@@ -85,9 +87,9 @@ async def login(
         access_timedelta = timedelta(minutes=auth.JWT_CONFIG["access_expiration"])
         refresh_timedelta = timedelta(minutes=auth.JWT_CONFIG["refresh_expiration"])
     except KeyError as e:
-        msg = f"An error occured while retriving the tokens expiration times"
+        msg = "An error occured while retriving the tokens expiration times"
         logger.error("routes", f"{msg}: {e}")
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg)
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg) from e
 
     # Generating access and refresh tokens.
     try:
@@ -106,13 +108,13 @@ async def login(
             auth.JWT_CONFIG["algorithm"],
         )
     except KeyError as e:
-        msg = f"An error occured while retriving the secret or the algorithm to encode the tokens"
+        msg = "An error occured while retriving the secret or the algorithm to encode the tokens"
         logger.error("routes", f"{msg}: {e}")
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg)
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg) from e
     except JWTError as e:
-        msg = f"An error occured while encoding the tokens"
+        msg = "An error occured while encoding the tokens"
         logger.error("routes", f"{msg}: {e}")
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg)
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg) from e
 
     response = AuthMessage(
         access_token=access_token, refresh_token=refresh_token, token_type="bearer"
@@ -154,6 +156,7 @@ _REFRESH_POST_PARAMS: Final[Dict[Endpoint, Any]] = {
 async def refresh(
     refresh_token: str | None = Header(default=None),
 ):
+    # pylint: disable=missing-function-docstring
     logger = CONTAINER.get(ILogger)
     response: BaseModel
     status_code: int
@@ -166,14 +169,14 @@ async def refresh(
         logger.debug("routes", f"Decoded token {decoded_token}")
     except DecodeTokenError as e:
         logger.warning("routes", e.loggable)
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=e.msg)
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=e.msg) from e
 
     # Validate the token.
     try:
         _ = auth.valid_refresh_token(decoded_token)
     except ValidateTokenError as e:
         logger.warning("routes", e.loggable)
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=e.msg)
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=e.msg) from e
 
     # If username not in db raise exception.
     user_res = await db_user.User.find_one(
@@ -199,9 +202,9 @@ async def refresh(
         access_timedelta = timedelta(minutes=auth.JWT_CONFIG["access_expiration"])
         refresh_timedelta = timedelta(minutes=auth.JWT_CONFIG["refresh_expiration"])
     except KeyError as e:
-        msg = f"An error occured while retriving the tokens expiration times"
+        msg = "An error occured while retriving the tokens expiration times"
         logger.error("routes", f"{msg}: {e}")
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg)
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg) from e
 
     # Generating access and refresh tokens.
     try:
@@ -220,13 +223,13 @@ async def refresh(
             auth.JWT_CONFIG["algorithm"],
         )
     except KeyError as e:
-        msg = f"An error occured while retriving the secret or the algorithm to encode the tokens"
+        msg = "An error occured while retriving the secret or the algorithm to encode the tokens"
         logger.error("routes", f"{msg}: {e}")
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg)
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg) from e
     except JWTError as e:
-        msg = f"An error occured while encoding the tokens"
+        msg = "An error occured while encoding the tokens"
         logger.error("routes", f"{msg}: {e}")
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg)
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg) from e
 
     # Generate new token pair.
     response = AuthMessage(

@@ -23,6 +23,7 @@ from tests import (
 
 @pytest.mark.asyncio
 async def test_register():
+    """Test user registration"""
 
     # DB connection.
     await build_db_client()
@@ -45,6 +46,7 @@ async def test_register():
 
 @pytest.mark.asyncio
 async def test_register_duplicate_email():
+    """Test user registration with duplicate email"""
 
     # DB connection.
     await build_db_client()
@@ -78,6 +80,7 @@ async def test_register_duplicate_email():
 
 @pytest.mark.asyncio
 async def test_register_duplicate_username():
+    """Test user registration with duplicate username"""
 
     # DB connection.
     await build_db_client()
@@ -111,6 +114,7 @@ async def test_register_duplicate_username():
 
 @pytest.mark.asyncio
 async def test_register_admin():
+    """Test admin registration"""
 
     # DB connection.
     await build_db_client()
@@ -140,6 +144,7 @@ async def test_register_admin():
 
 @pytest.mark.asyncio
 async def test_register_admin_wrong_roles():
+    """Test admin registration with bad roles"""
 
     # DB connection.
     await build_db_client()
@@ -169,6 +174,7 @@ async def test_register_admin_wrong_roles():
 
 @pytest.mark.asyncio
 async def test_register_admin_missing_roles():
+    """Test admin registration with missing roles"""
 
     # DB connection.
     await build_db_client()
@@ -197,6 +203,7 @@ async def test_register_admin_missing_roles():
 
 @pytest.mark.asyncio
 async def test_register_admin_duplicate_email():
+    """Test admin registration with duplicate email"""
 
     # DB connection.
     await build_db_client()
@@ -237,6 +244,7 @@ async def test_register_admin_duplicate_email():
 
 @pytest.mark.asyncio
 async def test_register_admin_duplicate_username():
+    """Test admin registration with duplicate username"""
 
     # DB connection.
     await build_db_client()

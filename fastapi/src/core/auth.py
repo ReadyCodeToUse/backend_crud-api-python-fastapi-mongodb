@@ -4,16 +4,17 @@ from os import environ
 from os.path import join
 from typing import Any, Dict, Final, List, Tuple
 
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
 from jose import jwt
 from jose.exceptions import ExpiredSignatureError, JWTError
 from passlib.context import CryptContext
+from yaml import safe_load
+
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
 from src.core.exceptions import DecodeTokenError
 from src.helpers.container import CONTAINER
 from src.models.user import Role
 from src.services.logger.interfaces.i_logger import ILogger
-from yaml import safe_load
 
 # This is instance will be injected in routes when those have to be secured.
 # This is just checcking the user exists and the inserted credentials are corect, role is not
@@ -32,9 +33,9 @@ _PWD_CONTEX: Final = CryptContext(schemes=["bcrypt"], deprecated="auto")
 JWT_CONFIG: Final[Dict[str, Any]]
 try:
     config_file_path = join(environ["CONFIGS_DIR"], "auth", "jwt_details.yaml")
-    with open(config_file_path) as config_file_stream:
+    with open(config_file_path, encoding="utf-8") as config_file_stream:
         JWT_CONFIG = safe_load(config_file_stream)
-except Exception as e:
+except Exception:
     logger = CONTAINER.get(ILogger)
     logger.critical(
         "errors", f"An error occured while reading the configuration file in {__file__}"
@@ -105,13 +106,13 @@ def decode_token(encoded_token: str) -> dict:
         )
     except ExpiredSignatureError as e:
         msg = "The provided token is expired"
-        raise DecodeTokenError(loggable=str(e), msg=msg)
+        raise DecodeTokenError(loggable=str(e), msg=msg) from e
     except JWTError as e:
         msg = "The provided token is invalid, or cyphered with a different key."
-        raise DecodeTokenError(loggable=str(e), msg=msg)
+        raise DecodeTokenError(loggable=str(e), msg=msg) from e
     except Exception as e:
         msg = "An unknown error occured while decoding the token, make sure you are passing a valid and not expired token."
-        raise DecodeTokenError(loggable=str(e), msg=msg)
+        raise DecodeTokenError(loggable=str(e), msg=msg) from e
 
     return decoded_token
 
@@ -194,7 +195,7 @@ def is_authorized(token: str = Depends(OAUTH2_SCHEME)) -> Tuple[bool, dict]:
         decoded_token = decode_token(token)
     except DecodeTokenError as e:
         # logger.warning("routes", e.loggable)
-        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail=e.msg)
+        raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail=e.msg) from e
     return (valid_access_token(decoded_token), decoded_token)
 
 

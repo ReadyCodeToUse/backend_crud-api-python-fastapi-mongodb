@@ -20,6 +20,7 @@ typesentry = "==0.2.7"
 uvicorn = {extras = ["standard"], version = ">=0.21"}
 injector = {version = "~=0.20"}
 pylint = "*"
+pylint-pydantic = "*"
 
 [requires]
 python_version = "3.10"

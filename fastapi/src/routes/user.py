@@ -3,24 +3,19 @@ from typing import Any, Dict, Final, List, Tuple
 
 from beanie.odm.enums import SortDirection
 from beanie.operators import All
+from pydantic import BaseModel
+from pymongo.errors import DuplicateKeyError
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
-from pydantic import BaseModel
-from pymongo.errors import DuplicateKeyError
 from src.core.auth import hash_password, is_admin, is_authorized, require_admin
 from src.db.collections.user import User as UserCollection
 from src.helpers.container import CONTAINER
 from src.models.commons import BaseMessage, HttpExceptionMessage
-from src.models.user import (
-    CurrentUserDetails,
-    Role,
-    UpdateUserDetails,
-    UserPartialDetails,
-    UserPartialDetailsAdmin,
-    UserRegistration,
-    UserRegistrationAdmin,
-)
+from src.models.user import (CurrentUserDetails, Role, UpdateUserDetails,
+                             UserPartialDetails, UserPartialDetailsAdmin,
+                             UserRegistration, UserRegistrationAdmin)
 from src.routes.enums.commons import Endpoint
 from src.services.logger.interfaces.i_logger import ILogger
 
@@ -50,6 +45,7 @@ _REGISTER_POST_PARAMS: Final[Dict[Endpoint, Any]] = {
     description=_REGISTER_POST_PARAMS[Endpoint.DESCRIPTION],
 )
 async def register(user_registration: UserRegistration):
+    # pylint: disable=missing-function-docstring
     logger = CONTAINER.get(ILogger)
     status_code: int
     response: BaseModel
@@ -76,11 +72,11 @@ async def register(user_registration: UserRegistration):
         logger.error("routes", str(e))
         duplicates = dict(e.details).get("keyPattern")
         msg = f"The following fields must be unique: {duplicates}"
-        raise HTTPException(status.HTTP_409_CONFLICT, detail=msg)
+        raise HTTPException(status.HTTP_409_CONFLICT, detail=msg) from e
     except Exception as e:
         logger.error("routes", str(e))
-        msg = f"An unknown exception occured, maybe bad db connection"
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg)
+        msg = "An unknown exception occured, maybe bad db connection"
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg) from e
 
     response = BaseMessage(message="OK")
     status_code = status.HTTP_201_CREATED
@@ -129,6 +125,7 @@ async def register_admin(
     user_registration: UserRegistrationAdmin,
     is_admin_result: Tuple[bool, bool, dict] = Depends(is_admin),
 ):
+    # pylint: disable=missing-function-docstring
     logger = CONTAINER.get(ILogger)
     status_code: int
     response: BaseModel
@@ -145,7 +142,8 @@ async def register_admin(
     # Document creation.
     logger.info(
         "routes",
-        f"Document creation for user having {user_registration.username} as username and roles {user_registration.roles}.",
+        f"Document creation for user having {user_registration.username}"
+        f" as username and roles {user_registration.roles}.",
     )
     user = UserCollection(
         email=user_registration.email,
@@ -163,18 +161,19 @@ async def register_admin(
         logger.error("routes", str(e))
         duplicates = dict(e.details).get("keyPattern")
         msg = f"The following fields must be unique: {duplicates}"
-        raise HTTPException(status.HTTP_409_CONFLICT, detail=msg)
+        raise HTTPException(status.HTTP_409_CONFLICT, detail=msg) from e
     except Exception as e:
         logger.error("routes", str(e))
-        msg = f"An unknown exception occured, maybe bad db connection"
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg)
+        msg = "An unknown exception occured, maybe bad db connection"
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg) from e
 
     response = BaseMessage(message="OK")
     status_code = status.HTTP_201_CREATED
 
     logger.info(
         "routes",
-        f"The user having username {user_registration.username} and roles {user_registration.roles} has been succesully added to the db.",
+        f"The user having username {user_registration.username}"
+        f" and roles {user_registration.roles} has been succesully added to the db.",
     )
     return JSONResponse(status_code=status_code, content=jsonable_encoder(response))
 
@@ -210,6 +209,7 @@ async def get_all_users(
     skip: int | None = None,
     is_admin_result: Tuple[bool, bool, dict] = Depends(is_admin),
 ):
+    # pylint: disable=missing-function-docstring
     logger = CONTAINER.get(ILogger)
     status_code: int
     response: BaseModel
@@ -241,13 +241,13 @@ async def get_all_users(
         logger.error(
             "routes", f"An unknown exception occured while fetcthing the users: {e}"
         )
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR) from e
 
     status_code = status.HTTP_200_OK
 
     logger.info(
         "routes",
-        f"Success returning all the users.",
+        "Success returning all the users.",
     )
     return JSONResponse(status_code=status_code, content=jsonable_encoder(response))
 
@@ -281,6 +281,7 @@ _GET_USERS_COUNT_PARAMS: Final[Dict[Endpoint, Any]] = {
 async def get_users_count(
     is_authorized_result: Tuple[bool, dict] = Depends(is_authorized)
 ):
+    # pylint: disable=missing-function-docstring
     logger = CONTAINER.get(ILogger)
     status_code: int
     response: int
@@ -294,7 +295,7 @@ async def get_users_count(
 
     logger.info(
         "routes",
-        f"Returning the total number of users document in the db.",
+        "Returning the total number of users document in the db.",
     )
 
     try:
@@ -302,15 +303,15 @@ async def get_users_count(
     except Exception as e:
         logger.error(
             "routes",
-            f"An unknown exception occured while fetcthing the total number of users documents: {e}",
+            "An unknown exception occured while fetcthing the total number of users documents: {e}",
         )
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR) from e
 
     status_code = status.HTTP_200_OK
 
     logger.info(
         "routes",
-        f"Success returning the total number of users documents in the db.",
+        "Success returning the total number of users documents in the db.",
     )
     return JSONResponse(status_code=status_code, content=jsonable_encoder(response))
 
@@ -340,6 +341,7 @@ _GET_USER_BY_ID_PARAMS: Final[Dict[Endpoint, Any]] = {
 async def get_user_by_username(
     username: str, is_admin_result: Tuple[bool, bool, dict] = Depends(is_admin)
 ):
+    # pylint: disable=missing-function-docstring
     logger = CONTAINER.get(ILogger)
     status_code: int
     response: BaseModel
@@ -369,13 +371,13 @@ async def get_user_by_username(
         logger.error(
             "routes", f"An unknown exception occured while fetcthing the user: {e}"
         )
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR)
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR) from e
 
     status_code = status.HTTP_200_OK
 
     logger.info(
         "routes",
-        f"Success returning the serched user.",
+        "Success returning the serched user.",
     )
     return JSONResponse(status_code=status_code, content=jsonable_encoder(response))
 
@@ -405,6 +407,7 @@ _GET_CURRENT_USER_PARAMS: Final[Dict[Endpoint, Any]] = {
 async def get_current_user(
     is_authorized_result: Tuple[bool, dict] = Depends(is_authorized),
 ):
+    # pylint: disable=missing-function-docstring
 
     # Check if the user is authorized or not.
     if not is_authorized_result[0]:
@@ -461,6 +464,7 @@ async def put_user_by_username(
     updated_user: UpdateUserDetails,
     is_admin_result: Tuple[bool, bool, dict] = Depends(is_admin),
 ):
+    # pylint: disable=missing-function-docstring
 
     logger = CONTAINER.get(ILogger)
 
@@ -490,11 +494,11 @@ async def put_user_by_username(
         logger.error("routes", str(e))
         duplicates = dict(e.details).get("keyPattern")
         msg = f"The following fields must be unique: {duplicates}"
-        raise HTTPException(status.HTTP_409_CONFLICT, detail=msg)
+        raise HTTPException(status.HTTP_409_CONFLICT, detail=msg) from e
     except Exception as e:
         logger.error("routes", str(e))
-        msg = f"An unknown exception occured, maybe bad db connection"
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg)
+        msg = "An unknown exception occured, maybe bad db connection"
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg) from e
 
     logger.info("routes", f"Succesful update for {username} to {updated_user.json()}")
 
@@ -535,10 +539,11 @@ _DELETE_USER_BY_USERNAME_PARAMS: Final[Dict[Endpoint, Any]] = {
     responses=_DELETE_USER_BY_USERNAME_PARAMS[Endpoint.RESPONSES],
     description=_DELETE_USER_BY_USERNAME_PARAMS[Endpoint.DESCRIPTION],
 )
-async def put_user_by_username(
+async def delete_user_by_username(
     username: str,
     is_admin_result: Tuple[bool, bool, dict] = Depends(is_admin),
 ):
+    # pylint: disable=missing-function-docstring
 
     logger = CONTAINER.get(ILogger)
 
@@ -572,8 +577,8 @@ async def put_user_by_username(
         await to_delete.delete()
     except Exception as e:
         logger.error("routes", str(e))
-        msg = f"An unknown exception occured, maybe bad db connection"
-        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg)
+        msg = "An unknown exception occured, maybe bad db connection"
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail=msg) from e
 
     logger.info("routes", f"Succesful deletion for {username}")
 

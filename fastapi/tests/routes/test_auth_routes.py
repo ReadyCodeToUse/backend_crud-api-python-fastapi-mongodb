@@ -2,11 +2,12 @@ import json
 
 import pytest
 from httpx import AsyncClient
-from tests import BASE_URL, build_db_client, fastapi_app, user_login
+from tests import BASE_URL, build_db_client, fastapi_app
 
 
 @pytest.mark.asyncio
 async def test_login():
+    """Test user login, successful result expected"""
     await build_db_client()
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.post(
@@ -29,6 +30,7 @@ async def test_login():
 
 @pytest.mark.asyncio
 async def test_bad_username_login():
+    """Test user login, fails result expected"""
     await build_db_client()
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.post(
@@ -47,6 +49,7 @@ async def test_bad_username_login():
 
 @pytest.mark.asyncio
 async def test_bad_password_login():
+    """Test user login, bad passowrd should return failure"""
     await build_db_client()
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.post(
@@ -65,6 +68,7 @@ async def test_bad_password_login():
 
 @pytest.mark.asyncio
 async def test_refresh():
+    """Test user login, bad passowrd should return failure"""
     await build_db_client()
 
     # Generate a valid token.
@@ -96,9 +100,11 @@ async def test_refresh():
 
 @pytest.mark.asyncio
 async def test_expired_token_refresh():
+    """Test try to access with expired refresh token, should return failure"""
     await build_db_client()
 
     # Token generated w/ secret key contained in tests/__init__.py
+    # pylint: disable=line-too-long
     expired_refresh_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIiLCJyb2xlcyI6W10sImV4cCI6MTY1OTI3MTY1MCwiaXNfcmVmcmVzaCI6dHJ1ZX0.An__1VtiNl38kLUfZyVhtljsAh4w8VTj0anv0lAFjLI"
 
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
@@ -111,6 +117,7 @@ async def test_expired_token_refresh():
 
 @pytest.mark.asyncio
 async def test_invalid_token_refresh():
+    """Test try to access with invalid refresh token, should retourne failure"""
     await build_db_client()
 
     # Add any invalid token.
@@ -126,8 +133,10 @@ async def test_invalid_token_refresh():
 
 @pytest.mark.asyncio
 async def test_invalid_token_structure_refresh():
+    """Test try refresh with token having invalid structure"""
     await build_db_client()
 
+    #pylint: disable=line-too-long
     invalid_refresh_token = "eyJhbGciOiJIUzI1NiJ9.eyJpbnZhbGlkLWZpZWxkcyI6ImEgcmFuZG9tIHZhbHVlIn0.lEk4w_k3Sc-IzVeEWj0qIABdY2Nt5zClJPeLFN5FchA"
 
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
