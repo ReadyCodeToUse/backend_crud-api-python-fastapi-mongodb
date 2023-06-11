@@ -1,5 +1,5 @@
 from datetime import datetime
-from typing import Any, Dict, Final, List, Tuple
+from typing import List, Tuple
 
 from beanie.odm.enums import SortDirection
 from beanie.operators import All
@@ -22,15 +22,16 @@ from src.models.user import (
     UserRegistration,
     UserRegistrationAdmin,
 )
-from src.routes.enums.commons import Endpoint
 from src.services.logger.interfaces.i_logger import ILogger
 
 # Router instantiation.
 router = APIRouter()
 
-_REGISTER_POST_PARAMS: Final[Dict[Endpoint, Any]] = {
-    Endpoint.RESPONSE_MODEL: BaseMessage,
-    Endpoint.RESPONSES: {
+
+@router.post(
+    "/register",
+    response_model=BaseMessage,
+    responses={
         status.HTTP_409_CONFLICT: {
             "model": HttpExceptionMessage,
             "description": "Unsuccesful registration, the user already exists",
@@ -40,18 +41,10 @@ _REGISTER_POST_PARAMS: Final[Dict[Endpoint, Any]] = {
             "description": "An unknown error occured while registering the user",
         },
     },
-    Endpoint.DESCRIPTION: (
+    description=(
         "User registration for basic user, this will set the default user role to 'user', "
         "to let the use chose the roles use the /register-admin endpoint"
     ),
-}
-
-
-@router.post(
-    "/register",
-    response_model=_REGISTER_POST_PARAMS[Endpoint.RESPONSE_MODEL],
-    responses=_REGISTER_POST_PARAMS[Endpoint.RESPONSES],
-    description=_REGISTER_POST_PARAMS[Endpoint.DESCRIPTION],
 )
 async def register(user_registration: UserRegistration):
     # pylint: disable=missing-function-docstring
@@ -68,7 +61,7 @@ async def register(user_registration: UserRegistration):
     user = UserCollection(
         email=user_registration.email,
         username=user_registration.username,
-        password=user_registration.password,
+        password=hash_password(user_registration.password),
         roles=[Role.USER.value],
         creation=now_date,
         last_update=now_date,
@@ -98,9 +91,10 @@ async def register(user_registration: UserRegistration):
     return JSONResponse(status_code=status_code, content=jsonable_encoder(response))
 
 
-_REGISTER_ADMIN_POST_PARAMS: Final[Dict[Endpoint, Any]] = {
-    Endpoint.RESPONSE_MODEL: BaseMessage,
-    Endpoint.RESPONSES: {
+@router.post(
+    "/register-roles",
+    response_model=BaseMessage,
+    responses={
         status.HTTP_401_UNAUTHORIZED: {
             "model": HttpExceptionMessage,
             # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
@@ -120,23 +114,13 @@ _REGISTER_ADMIN_POST_PARAMS: Final[Dict[Endpoint, Any]] = {
             "description": "An unknown error occured while registering the user",
         },
     },
-    Endpoint.DESCRIPTION: (
+    description=(
         "User registration for admin, this will let the user chose the roles, "
         "at least one role is required.This endpoint execution is "
         "limited to users having the admin role. "
         "This endpoint execution is limited to users having the admin role."
     ),
-    Endpoint.DEPENDENCIES: [Depends(require_admin)],
-    # Endpoint.TAGS: [Role.ADMIN.value.capitalize()],
-}
-
-
-@router.post(
-    "/register-roles",
-    response_model=_REGISTER_ADMIN_POST_PARAMS[Endpoint.RESPONSE_MODEL],
-    responses=_REGISTER_ADMIN_POST_PARAMS[Endpoint.RESPONSES],
-    description=_REGISTER_ADMIN_POST_PARAMS[Endpoint.DESCRIPTION],
-    dependencies=_REGISTER_ADMIN_POST_PARAMS[Endpoint.DEPENDENCIES],
+    dependencies=[Depends(require_admin)],
 )
 async def register_admin(
     user_registration: UserRegistrationAdmin,
@@ -195,9 +179,10 @@ async def register_admin(
     return JSONResponse(status_code=status_code, content=jsonable_encoder(response))
 
 
-_GET_ALL_USERS_PARAMS: Final[Dict[Endpoint, Any]] = {
-    Endpoint.RESPONSE_MODEL: List[UserPartialDetails | UserPartialDetailsAdmin],
-    Endpoint.RESPONSES: {
+@router.get(
+    "/all",
+    response_model=List[UserPartialDetails | UserPartialDetailsAdmin],
+    responses={
         status.HTTP_401_UNAUTHORIZED: {
             "model": HttpExceptionMessage,
             # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
@@ -213,18 +198,11 @@ _GET_ALL_USERS_PARAMS: Final[Dict[Endpoint, Any]] = {
             "description": "An unknown error occured while registering the user",
         },
     },
-    Endpoint.DESCRIPTION: (
+    description=(
         "Get all users with parial details from the db. "
         "If needed is possible to limit returned entities and skip the required amount"
     ),
-}
-
-
-@router.get(
-    "/all",
-    response_model=_GET_ALL_USERS_PARAMS[Endpoint.RESPONSE_MODEL],
-    responses=_GET_ALL_USERS_PARAMS[Endpoint.RESPONSES],
-    description=_GET_ALL_USERS_PARAMS[Endpoint.DESCRIPTION],
+    dependencies=[Depends(is_admin)],
 )
 async def get_all_users(
     limit: int | None = None,
@@ -274,9 +252,10 @@ async def get_all_users(
     return JSONResponse(status_code=status_code, content=jsonable_encoder(response))
 
 
-_GET_USERS_COUNT_PARAMS: Final[Dict[Endpoint, Any]] = {
-    Endpoint.RESPONSE_MODEL: int,
-    Endpoint.RESPONSES: {
+@router.get(
+    "/count",
+    response_model=int,
+    responses={
         status.HTTP_401_UNAUTHORIZED: {
             "model": HttpExceptionMessage,
             # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
@@ -292,15 +271,8 @@ _GET_USERS_COUNT_PARAMS: Final[Dict[Endpoint, Any]] = {
             "description": "An unknown error occured while registering the user",
         },
     },
-    Endpoint.DESCRIPTION: "Get the total number of users in the database",
-}
-
-
-@router.get(
-    "/count",
-    response_model=_GET_USERS_COUNT_PARAMS[Endpoint.RESPONSE_MODEL],
-    responses=_GET_USERS_COUNT_PARAMS[Endpoint.RESPONSES],
-    description=_GET_USERS_COUNT_PARAMS[Endpoint.DESCRIPTION],
+    description=("Get the total number of users in the database"),
+    dependencies=[Depends(is_authorized)],
 )
 async def get_users_count(
     is_authorized_result: Tuple[bool, dict] = Depends(is_authorized)
@@ -340,9 +312,10 @@ async def get_users_count(
     return JSONResponse(status_code=status_code, content=jsonable_encoder(response))
 
 
-_GET_USER_BY_ID_PARAMS: Final[Dict[Endpoint, Any]] = {
-    Endpoint.RESPONSE_MODEL: List[UserPartialDetails | UserPartialDetailsAdmin],
-    Endpoint.RESPONSES: {
+@router.get(
+    "/username/{username}",
+    response_model=List[UserPartialDetails | UserPartialDetailsAdmin],
+    responses={
         status.HTTP_401_UNAUTHORIZED: {
             "model": HttpExceptionMessage,
             # Exception raised by the require_admin function (see Endpoint.DEPENDENCIES).
@@ -353,18 +326,11 @@ _GET_USER_BY_ID_PARAMS: Final[Dict[Endpoint, Any]] = {
             "description": "An unknown error occured while retriving the user",
         },
     },
-    Endpoint.DESCRIPTION: (
+    description=(
         "Get user parial details from the db given the username."
         " To get full details run admin endpoint."
     ),
-}
-
-
-@router.get(
-    "/username/{username}",
-    response_model=_GET_USER_BY_ID_PARAMS[Endpoint.RESPONSE_MODEL],
-    responses=_GET_USER_BY_ID_PARAMS[Endpoint.RESPONSES],
-    description=_GET_USER_BY_ID_PARAMS[Endpoint.DESCRIPTION],
+    dependencies=[Depends(is_admin)],
 )
 async def get_user_by_username(
     username: str, is_admin_result: Tuple[bool, bool, dict] = Depends(is_admin)
@@ -410,9 +376,10 @@ async def get_user_by_username(
     return JSONResponse(status_code=status_code, content=jsonable_encoder(response))
 
 
-_GET_CURRENT_USER_PARAMS: Final[Dict[Endpoint, Any]] = {
-    Endpoint.RESPONSE_MODEL: CurrentUserDetails,
-    Endpoint.RESPONSES: {
+@router.get(
+    "/me",
+    response_model=CurrentUserDetails,
+    responses={
         status.HTTP_401_UNAUTHORIZED: {
             "model": HttpExceptionMessage,
             "description": "Unauthorized",
@@ -422,15 +389,8 @@ _GET_CURRENT_USER_PARAMS: Final[Dict[Endpoint, Any]] = {
             "description": "An unknown error occured while retriving the user",
         },
     },
-    Endpoint.DESCRIPTION: "Get current user complete details.",
-}
-
-
-@router.get(
-    "/me",
-    response_model=_GET_CURRENT_USER_PARAMS[Endpoint.RESPONSE_MODEL],
-    responses=_GET_CURRENT_USER_PARAMS[Endpoint.RESPONSES],
-    description=_GET_CURRENT_USER_PARAMS[Endpoint.DESCRIPTION],
+    description="Get current user complete details.",
+    dependencies=[Depends(is_authorized)],
 )
 async def get_current_user(
     is_authorized_result: Tuple[bool, dict] = Depends(is_authorized),
@@ -453,9 +413,10 @@ async def get_current_user(
     return JSONResponse(status_code=status_code, content=jsonable_encoder(response))
 
 
-_PUT_USER_BY_USERNAME_PARAMS: Final[Dict[Endpoint, Any]] = {
-    Endpoint.RESPONSE_MODEL: int,
-    Endpoint.RESPONSES: {
+@router.put(
+    "/username/{username}",
+    response_model=int,
+    responses={
         status.HTTP_401_UNAUTHORIZED: {
             "model": HttpExceptionMessage,
             "description": "Unauthorized",
@@ -477,17 +438,10 @@ _PUT_USER_BY_USERNAME_PARAMS: Final[Dict[Endpoint, Any]] = {
             "description": "An unknown error occured while retriving the user",
         },
     },
-    Endpoint.DESCRIPTION: (
+    description=(
         "Update user given the username in path and user with updated fields in body."
     ),
-}
-
-
-@router.put(
-    "/username/{username}",
-    response_model=_PUT_USER_BY_USERNAME_PARAMS[Endpoint.RESPONSE_MODEL],
-    responses=_PUT_USER_BY_USERNAME_PARAMS[Endpoint.RESPONSES],
-    description=_PUT_USER_BY_USERNAME_PARAMS[Endpoint.DESCRIPTION],
+    dependencies=[Depends(is_admin)],
 )
 async def put_user_by_username(
     username: str,
@@ -536,9 +490,10 @@ async def put_user_by_username(
     return JSONResponse(status.HTTP_200_OK)
 
 
-_DELETE_USER_BY_USERNAME_PARAMS: Final[Dict[Endpoint, Any]] = {
-    Endpoint.RESPONSE_MODEL: int,
-    Endpoint.RESPONSES: {
+@router.delete(
+    "/username/{username}",
+    response_model=int,
+    responses={
         status.HTTP_401_UNAUTHORIZED: {
             "model": HttpExceptionMessage,
             "description": "Unauthorized",
@@ -560,17 +515,10 @@ _DELETE_USER_BY_USERNAME_PARAMS: Final[Dict[Endpoint, Any]] = {
             "description": "An unknown error occured while retriving the user",
         },
     },
-    Endpoint.DESCRIPTION: (
+    description=(
         "Update user given the username in path and user with updated fields in body."
     ),
-}
-
-
-@router.delete(
-    "/username/{username}",
-    response_model=_DELETE_USER_BY_USERNAME_PARAMS[Endpoint.RESPONSE_MODEL],
-    responses=_DELETE_USER_BY_USERNAME_PARAMS[Endpoint.RESPONSES],
-    description=_DELETE_USER_BY_USERNAME_PARAMS[Endpoint.DESCRIPTION],
+    dependencies=[Depends(is_admin)],
 )
 async def delete_user_by_username(
     username: str,

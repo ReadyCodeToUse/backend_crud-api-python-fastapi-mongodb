@@ -1,6 +1,5 @@
 from datetime import timedelta
 from os import environ
-from typing import Any, Dict, Final
 
 from jose.exceptions import JWTError
 from pydantic import BaseModel
@@ -16,16 +15,16 @@ from src.helpers.container import CONTAINER
 from src.models.auth import AuthMessage
 from src.models.commons import HttpExceptionMessage
 from src.models.user import UserLogin
-from src.routes.enums.commons import Endpoint
 from src.services.logger.interfaces.i_logger import ILogger
 
 # Router instantiation.
 router = APIRouter()
 
-# Constant initialization.
-_LOGIN_POST_PARAMS: Final[Dict[Endpoint, Any]] = {
-    Endpoint.RESPONSE_MODEL: AuthMessage,
-    Endpoint.RESPONSES: {
+
+@router.post(
+    "/login",
+    response_model=AuthMessage,
+    responses={
         status.HTTP_401_UNAUTHORIZED: {
             "model": HttpExceptionMessage,
             "description": "Unsuccesful login, wrong email or password",
@@ -35,18 +34,10 @@ _LOGIN_POST_PARAMS: Final[Dict[Endpoint, Any]] = {
             "description": "An errorr occured during the token creation",
         },
     },
-    Endpoint.DESCRIPTION: (
+    description=(
         "Authenticate an user given username and password to returns "
         "a set of access and refresh tokens after a succesful validation."
     ),
-}
-
-
-@router.post(
-    "/login",
-    response_model=_LOGIN_POST_PARAMS[Endpoint.RESPONSE_MODEL],
-    responses=_LOGIN_POST_PARAMS[Endpoint.RESPONSES],
-    description=_LOGIN_POST_PARAMS[Endpoint.DESCRIPTION],
 )
 async def login(
     request_form: OAuth2PasswordRequestForm = Depends(),
@@ -130,9 +121,10 @@ async def login(
     return JSONResponse(status_code=status_code, content=jsonable_encoder(response))
 
 
-_REFRESH_POST_PARAMS: Final[Dict[Endpoint, Any]] = {
-    Endpoint.RESPONSE_MODEL: AuthMessage,
-    Endpoint.RESPONSES: {
+@router.post(
+    "/refresh",
+    response_model=AuthMessage,
+    responses={
         status.HTTP_401_UNAUTHORIZED: {
             "model": HttpExceptionMessage,
             "description": (
@@ -151,19 +143,11 @@ _REFRESH_POST_PARAMS: Final[Dict[Endpoint, Any]] = {
             "description": "An error occured while refreshing the token",
         },
     },
-    Endpoint.DESCRIPTION: (
+    description=(
         "Token refresh route to provide a new set of access and refresh token. "
         "The new set will be generated from the refresh token, "
         "if this one is expired then login is newly required."
     ),
-}
-
-
-@router.post(
-    "/refresh",
-    response_model=_REFRESH_POST_PARAMS[Endpoint.RESPONSE_MODEL],
-    responses=_REFRESH_POST_PARAMS[Endpoint.RESPONSES],
-    description=_REFRESH_POST_PARAMS[Endpoint.DESCRIPTION],
 )
 async def refresh(
     refresh_token: str | None = Header(default=None),
