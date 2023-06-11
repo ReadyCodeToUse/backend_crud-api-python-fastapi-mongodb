@@ -17,6 +17,7 @@ IS_TYPED: Final[Any] = _TC.is_type
 
 
 async def admin_login() -> AuthMessage:
+    """Login as admin for test purpose"""
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         login_response = await ac.post(
             "/auth/login",
@@ -33,6 +34,7 @@ async def admin_login() -> AuthMessage:
 
 
 async def user_login() -> AuthMessage:
+    """Login as user for test purpose"""
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         login_response = await ac.post(
             "/auth/login",
