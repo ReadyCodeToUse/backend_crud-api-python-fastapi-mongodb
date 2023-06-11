@@ -76,7 +76,7 @@ async def register(user_registration: UserRegistration):
 
     # Saving the document to db.
     try:
-        await user.save()
+        await user.insert()
     except DuplicateKeyError as e:
         logger.error("routes", str(e))
         duplicates = dict(e.details).get("keyPattern")
@@ -173,7 +173,7 @@ async def register_admin(
 
     # Saving the document to db.
     try:
-        await user.save()
+        await user.insert()
     except DuplicateKeyError as e:
         logger.error("routes", str(e))
         duplicates = dict(e.details).get("keyPattern")

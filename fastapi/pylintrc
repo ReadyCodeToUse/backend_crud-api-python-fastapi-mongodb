@@ -189,6 +189,7 @@ good-names=i,
            j,
            k,
            e,
+           ac, # used in tests and stand for Async Client.
            Run,
            _
 
