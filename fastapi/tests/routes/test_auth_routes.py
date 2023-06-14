@@ -2,6 +2,7 @@ import json
 
 import pytest
 from httpx import AsyncClient
+
 from tests import BASE_URL, build_db_client, fastapi_app
 
 
@@ -108,9 +109,7 @@ async def test_expired_token_refresh():
     expired_refresh_token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InVzZXIiLCJyb2xlcyI6W10sImV4cCI6MTY1OTI3MTY1MCwiaXNfcmVmcmVzaCI6dHJ1ZX0.An__1VtiNl38kLUfZyVhtljsAh4w8VTj0anv0lAFjLI"
 
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
-        response = await ac.post(
-            "/auth/refresh", headers={"Refresh-Token": expired_refresh_token}
-        )
+        response = await ac.post("/auth/refresh", headers={"Refresh-Token": expired_refresh_token})
 
     assert response.status_code == 403
 
@@ -124,9 +123,7 @@ async def test_invalid_token_refresh():
     invalid_refresh_token = "pippo"
 
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
-        response = await ac.post(
-            "/auth/refresh", headers={"Refresh-Token": invalid_refresh_token}
-        )
+        response = await ac.post("/auth/refresh", headers={"Refresh-Token": invalid_refresh_token})
 
     assert response.status_code == 403
 
@@ -136,13 +133,11 @@ async def test_invalid_token_structure_refresh():
     """Test try refresh with token having invalid structure"""
     await build_db_client()
 
-    #pylint: disable=line-too-long
+    # pylint: disable=line-too-long
     invalid_refresh_token = "eyJhbGciOiJIUzI1NiJ9.eyJpbnZhbGlkLWZpZWxkcyI6ImEgcmFuZG9tIHZhbHVlIn0.lEk4w_k3Sc-IzVeEWj0qIABdY2Nt5zClJPeLFN5FchA"
 
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
-        response = await ac.post(
-            "/auth/refresh", headers={"Refresh-Token": invalid_refresh_token}
-        )
+        response = await ac.post("/auth/refresh", headers={"Refresh-Token": invalid_refresh_token})
 
     assert response.status_code == 403
 

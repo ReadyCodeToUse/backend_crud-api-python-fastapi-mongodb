@@ -21,6 +21,7 @@ python-jose = {extras = ["cryptography"], version = "latest"}
 typesentry = "==0.2.7"
 uvicorn = {extras = ["standard"], version = ">=0.21"}
 injector = {version = "~=0.20"}
+isort = "*"
 
 [requires]
 python_version = "3.10"
@@ -29,4 +30,6 @@ python_version = "3.10"
 tests = "python -m pytest -v"
 tests-list = "python -m pytest --co"
 serve-dev = "uvicorn src.app:fastapi_app --env-file .env --reload"
+format-code = "black ./tests ./src --target-version=py310 --preview --line-length=100"
+format-import = "isort --multi-line 3 --profile black --python-version 310 ."
 check-syntax = "pylint --rcfile=./pylintrc ."

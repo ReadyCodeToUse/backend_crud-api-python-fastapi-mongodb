@@ -1,5 +1,5 @@
-from datetime import datetime
 import re
+from datetime import datetime
 from enum import Enum
 from typing import List
 
@@ -105,7 +105,7 @@ class UserRegistrationAdmin(BaseUser, BaseUserRoles):
 
 
 class UserLogin(BaseUser, BaseUserRoles):
-    """Class for projection with only username and roles 
+    """Class for projection with only username and roles
     (other attributes if required, no password) from the db users collection."""
 
 
@@ -135,7 +135,7 @@ class UserPartialDetailsAdmin(BaseUser, BaseUserRoles):
 
 class CurrentUserDetails(BaseUser, BaseUserRoles):
     """
-    Class for projection containing the current user complete details: 
+    Class for projection containing the current user complete details:
     * email
     * username
     * roles

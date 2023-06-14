@@ -3,6 +3,7 @@ from typing import Final
 
 import pytest
 from jose import jwt
+
 from src.core.auth import (
     create_token,
     has_roles,
@@ -53,9 +54,7 @@ def test_create_token():
     )
 
     try:
-        decoded_token: dict = jwt.decode(
-            token=token, key=SECRET_KEY, algorithms="HS256"
-        )
+        decoded_token: dict = jwt.decode(token=token, key=SECRET_KEY, algorithms="HS256")
         assert decoded_token == {
             **USER,
             "exp": decoded_token["exp"],

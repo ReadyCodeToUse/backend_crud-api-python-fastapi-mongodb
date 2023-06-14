@@ -48,9 +48,7 @@ async def login(
     status_code: int
 
     # Query to get the requested user.
-    user_res = await db_user.User.find_one(
-        db_user.User.username == request_form.username
-    )
+    user_res = await db_user.User.find_one(db_user.User.username == request_form.username)
 
     msg = "Invalid username or password"
     # Search if user exists in DB.
@@ -115,9 +113,7 @@ async def login(
     )
     status_code = status.HTTP_200_OK
 
-    logger.info(
-        "routes", f"Successfully generated token for {user_projection.username}"
-    )
+    logger.info("routes", f"Successfully generated token for {user_projection.username}")
     return JSONResponse(status_code=status_code, content=jsonable_encoder(response))
 
 
@@ -134,8 +130,7 @@ async def login(
         status.HTTP_403_FORBIDDEN: {
             "model": HttpExceptionMessage,
             "description": (
-                "Unsuccesfull refresh, the token may be expired, "
-                "invalid or not a refresh token."
+                "Unsuccesfull refresh, the token may be expired, invalid or not a refresh token."
             ),
         },
         status.HTTP_500_INTERNAL_SERVER_ERROR: {
@@ -175,14 +170,10 @@ async def refresh(
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail=e.msg) from e
 
     # If username not in db raise exception.
-    user_res = await db_user.User.find_one(
-        db_user.User.username == decoded_token["username"]
-    )
+    user_res = await db_user.User.find_one(db_user.User.username == decoded_token["username"])
 
     if user_res is None:
-        logger.warning(
-            "routes", f"{decoded_token.get('username')} user not found in database."
-        )
+        logger.warning("routes", f"{decoded_token.get('username')} user not found in database.")
         msg = "The token contains informations of an unexisting user."
         raise HTTPException(status.HTTP_401_UNAUTHORIZED, detail=msg)
 
@@ -235,7 +226,5 @@ async def refresh(
     )
     status_code = status.HTTP_200_OK
 
-    logger.info(
-        "routes", f"Successfully refreshed token for {user_projection.username}"
-    )
+    logger.info("routes", f"Successfully refreshed token for {user_projection.username}")
     return JSONResponse(status_code=status_code, content=jsonable_encoder(response))

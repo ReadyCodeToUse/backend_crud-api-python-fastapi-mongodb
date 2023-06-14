@@ -18,7 +18,8 @@ async def root():
     log.info("some", "Hello world")
     return BaseMessage(message="Hello, world! (Simple message type)")
 
+
 @router.get("/test-auth")
 async def test_auth(token: str = Depends(OAUTH2_SCHEME)):
     # pylint: disable=missing-function-docstring
-    return jwt.decode(token, environ['SECRET_KEY'], algorithms='HS256')
+    return jwt.decode(token, environ["SECRET_KEY"], algorithms="HS256")

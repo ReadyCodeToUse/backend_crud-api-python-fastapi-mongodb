@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-
 from src.db.connection import build_client
 from src.routes.auth import router as auth_router
 from src.routes.hello_world import router as hello_world_router

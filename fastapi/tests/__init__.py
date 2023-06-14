@@ -4,6 +4,7 @@ from typing import Any, Final
 
 import typesentry
 from httpx import AsyncClient
+
 from src.app import fastapi_app
 from src.db.connection import build_client as build_db_client
 from src.models.auth import AuthMessage

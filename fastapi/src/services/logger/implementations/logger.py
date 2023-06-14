@@ -9,9 +9,10 @@ from os.path import isfile as os_path_isfile
 from os.path import join as os_path_join
 from typing import Dict, Final, Optional
 
+from yaml import safe_load
+
 from src.services.logger.enums.level import LogLevel
 from src.services.logger.models.configuration import TimedRotatingFileConfig
-from yaml import safe_load
 
 DEFAULT_LOG_FILE: Final[str] = os_path_join(environ["LOGGING_DIR"], "default.log")
 DEFAULT_LOG_LEVEL: Final[str] = LogLevel.DEBUG
@@ -32,9 +33,9 @@ class TimedLogger:
 
     # Private attributes.
     # _avaiable_loggers: List[str]
-    _avaiable_configs: Optional[
-        Dict[str, TimedRotatingFileConfig | DEFAULT_CONFIG_VALUE_TYPE]
-    ] = None
+    _avaiable_configs: Optional[Dict[str, TimedRotatingFileConfig | DEFAULT_CONFIG_VALUE_TYPE]] = (
+        None
+    )
 
     def __init__(self, config_file_path: Optional[str] = None) -> None:
         """

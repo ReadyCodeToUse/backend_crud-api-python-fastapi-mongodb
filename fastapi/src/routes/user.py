@@ -143,8 +143,10 @@ async def register_admin(
     # Document creation.
     logger.info(
         "routes",
-        f"Document creation for user having {user_registration.username}"
-        f" as username and roles {user_registration.roles}.",
+        (
+            f"Document creation for user having {user_registration.username}"
+            f" as username and roles {user_registration.roles}."
+        ),
     )
     user = UserCollection(
         email=user_registration.email,
@@ -173,8 +175,10 @@ async def register_admin(
 
     logger.info(
         "routes",
-        f"The user having username {user_registration.username}"
-        f" and roles {user_registration.roles} has been succesully added to the db.",
+        (
+            f"The user having username {user_registration.username}"
+            f" and roles {user_registration.roles} has been succesully added to the db."
+        ),
     )
     return JSONResponse(status_code=status_code, content=jsonable_encoder(response))
 
@@ -238,9 +242,7 @@ async def get_all_users(
             sort=[("username", SortDirection.ASCENDING)],
         ).to_list()
     except Exception as e:
-        logger.error(
-            "routes", f"An unknown exception occured while fetcthing the users: {e}"
-        )
+        logger.error("routes", f"An unknown exception occured while fetcthing the users: {e}")
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR) from e
 
     status_code = status.HTTP_200_OK
@@ -271,12 +273,10 @@ async def get_all_users(
             "description": "An unknown error occured while registering the user",
         },
     },
-    description=("Get the total number of users in the database"),
+    description="Get the total number of users in the database",
     dependencies=[Depends(is_authorized)],
 )
-async def get_users_count(
-    is_authorized_result: Tuple[bool, dict] = Depends(is_authorized)
-):
+async def get_users_count(is_authorized_result: Tuple[bool, dict] = Depends(is_authorized)):
     # pylint: disable=missing-function-docstring
     logger = CONTAINER.get(ILogger)
     status_code: int
@@ -362,9 +362,7 @@ async def get_user_by_username(
             projection_model=projection,
         )
     except Exception as e:
-        logger.error(
-            "routes", f"An unknown exception occured while fetcthing the user: {e}"
-        )
+        logger.error("routes", f"An unknown exception occured while fetcthing the user: {e}")
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR) from e
 
     status_code = status.HTTP_200_OK
@@ -438,9 +436,7 @@ async def get_current_user(
             "description": "An unknown error occured while retriving the user",
         },
     },
-    description=(
-        "Update user given the username in path and user with updated fields in body."
-    ),
+    description="Update user given the username in path and user with updated fields in body.",
     dependencies=[Depends(is_admin)],
 )
 async def put_user_by_username(
@@ -515,9 +511,7 @@ async def put_user_by_username(
             "description": "An unknown error occured while retriving the user",
         },
     },
-    description=(
-        "Update user given the username in path and user with updated fields in body."
-    ),
+    description="Update user given the username in path and user with updated fields in body.",
     dependencies=[Depends(is_admin)],
 )
 async def delete_user_by_username(
