@@ -1,5 +1,4 @@
 from fastapi import FastAPI
-
 from src.db.connection import build_client
 from src.routes.auth import router as auth_router
 from src.routes.hello_world import router as hello_world_router
@@ -15,5 +14,6 @@ fastapi_app.include_router(user_router, prefix="/user", tags=["User"])
 
 @fastapi_app.on_event("startup")
 async def app_init():
+    """Application initialization, launghed on startup state"""
     # Execute db connection.
     await build_client()

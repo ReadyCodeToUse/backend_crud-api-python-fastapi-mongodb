@@ -1,5 +1,5 @@
-from datetime import datetime
 import re
+from datetime import datetime
 from enum import Enum
 from typing import List
 
@@ -17,12 +17,26 @@ class BaseUsername(BaseModel):
     username: str = Field(..., description="User username")
 
     @validator("username")
-    def username_validation(cls, username):
+    def username_validation(cls, username: str) -> str:
+        """Username validator function.
+
+        Args:
+            username (str): username to validate.
+
+        Raises:
+            ValueError: Raised when username contains different chars form: alfanumerical,
+             underscores and dots.
+
+        Returns:
+            str: validated username.
+        """
+
         pattern = re.compile("^[a-z0-9._]+$")
         match = pattern.fullmatch(username)
         if match is None:
             raise ValueError(
-                "The username validation was not succesful, the username can only contain alfanumerical chars underscores and dots."
+                "The username validation was not succesful,"
+                " the username can only contain alfanumerical chars underscores and dots."
             )
         return username
 
@@ -33,13 +47,24 @@ class BaseUser(BaseUsername):
     email: EmailStr = Field(..., description="User email")
 
     @validator("email")
-    def email_validation(cls, email):
+    def email_validation(cls, email: str) -> str:
+        """Email validator function.
+
+        Args:
+            email (str): email to validate.
+
+        Raises:
+            ValueError: Raised when unvalid email is provided.
+
+        Returns:
+            str: validated email.
+        """
         try:
             return EmailStr.validate(email)
-        except Exception:
+        except Exception as e:
             raise ValueError(
                 "The email validation was not succesful, the email may be invalid."
-            )
+            ) from e
 
 
 class BaseUserRoles(BaseModel):
@@ -48,7 +73,18 @@ class BaseUserRoles(BaseModel):
     roles: List[Role] = Field(..., description="Collection of the user roles.")
 
     @validator("roles")
-    def roles_validation(cls, roles):
+    def roles_validation(cls, roles: List[Role]) -> List[Role]:
+        """Roles validator function.
+
+        Args:
+            roles (List[Role]): roles to validate.
+
+        Raises:
+            ValueError: Raised when unvalid roles are provided.
+
+        Returns:
+            List[Role]: validated roles
+        """
         if len(roles) == 0:
             raise ValueError(
                 "The roles validation was not succesful, at least a role must be present."
@@ -69,26 +105,43 @@ class UserRegistrationAdmin(BaseUser, BaseUserRoles):
 
 
 class UserLogin(BaseUser, BaseUserRoles):
-    """Class for projection with only username and roles (other attributes if required, no password), from the db users collection."""
-
-    pass
+    """Class for projection with only username and roles
+    (other attributes if required, no password) from the db users collection."""
 
 
 class UserPartialDetails(BaseUsername, BaseUserRoles):
-    """Class for projection containing partial user details: username, roles and creation date."""
+    """
+    Class for projection containing partial user details:
+    * username
+    * roles date
+    * creation date"""
 
     creation: datetime
 
 
 class UserPartialDetailsAdmin(BaseUser, BaseUserRoles):
-    """Class for projection containing partial user details: email, username, roles, craetion and last update dates."""
+    """
+    Class for projection containing partial user details:
+    * email
+    * username
+    * roles
+    * craetion date
+    * last update date
+    """
 
     creation: datetime
     last_update: datetime
 
 
 class CurrentUserDetails(BaseUser, BaseUserRoles):
-    """Class for projection containing the current user complete details: email, username, roles, creation and update dates."""
+    """
+    Class for projection containing the current user complete details:
+    * email
+    * username
+    * roles
+    * creation date
+    * update date
+    """
 
     creation: datetime
     last_update: datetime
@@ -96,5 +149,3 @@ class CurrentUserDetails(BaseUser, BaseUserRoles):
 
 class UpdateUserDetails(BaseUser, BaseUserRoles):
     """Class for updating an user."""
-
-    pass

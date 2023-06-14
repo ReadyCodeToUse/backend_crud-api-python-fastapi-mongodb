@@ -16,7 +16,7 @@ classifiers = [
 [tool.pytest.ini_options]
 minversion = "7.0"
 testpaths = ["tests"]
-env_files = [".env"]
+env_files = ["/absolute/path/to/your/.env.test"]
 markers = ["asyncio: mark a test for an async endpoint"]
 
 [build-system]

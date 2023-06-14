@@ -1,13 +1,13 @@
 # FastAPI API template
 This is an example of how to dockerize a python FastAPI REST API with auth.
 
-This is an example python project to demonstrate the following points:
-- python project structure example suitable for most projects
-- pytest and Test Driven Development (TDD)
-- containerization (To be added)
-- use of python best practices (PEP8) (To be added)
-- pylint (To be added)
-- use of pre-commits (To be added)
+This is an example python project to demonstate the following points:
+- [x] python project structure example suitable for most projects
+- [x] pytest and TDD (Test Driven Development)
+- [ ] containerization
+- [x] use of python best practices (PEP8)
+- [x] pylint
+- [ ] use of pre-commits
 
 This demo contains a REST API built over FastAPI, this repository can be used as a starting point for other projects too and not only REST API. 
 
@@ -148,6 +148,20 @@ $ pipenv run tests-list
 ```shell
 $ pipenv run tests
 ```
-The configuration for pytest is included in `pyproject.toml` under the [tool.pytest.ini_options] table.
+A `dotenv` for test is required under `./env/.env.test`, the configuration for pytest is included in `pyproject.toml` under the [tool.pytest.ini_options] table. You can change it to use whatever environemnt file you prefer. Just remember a running MongoDB instance is required to launch the tests.
+
+## Formatting and linting
+To make more readable code black, black and isort are provided as dependencies for development alongside with custom Pipfile scripts (open Pipefile to see 'em).
+Format the code by typing in your terminal from this python project repository:
+```shell
+$ pipenv run format-code
+$ pipenv run format-import
+```
+
+After cleaning the code out from human inconsistencies you can run the following command to score your code and see where it can require improvments:
+```shell
+$ pipenv run check-syntax
+```
+Settings for pylint are provided in the `pylintrc` file.
 # Docker
 For development the dockerization has been removed since pipenv provides all the required features I was searching for when upgrading to it. In future this section will be populated to add informations to deploy in a production environment.

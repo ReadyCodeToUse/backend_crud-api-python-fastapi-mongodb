@@ -3,6 +3,7 @@ from os.path import join
 from typing import Final
 
 from injector import Binder, Injector, singleton
+
 from src.services.logger.implementations.logger import TimedLogger
 from src.services.logger.interfaces.i_logger import ILogger
 

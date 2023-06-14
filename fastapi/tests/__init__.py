@@ -4,6 +4,7 @@ from typing import Any, Final
 
 import typesentry
 from httpx import AsyncClient
+
 from src.app import fastapi_app
 from src.db.connection import build_client as build_db_client
 from src.models.auth import AuthMessage
@@ -17,6 +18,7 @@ IS_TYPED: Final[Any] = _TC.is_type
 
 
 async def admin_login() -> AuthMessage:
+    """Login as admin for test purpose"""
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         login_response = await ac.post(
             "/auth/login",
@@ -33,6 +35,7 @@ async def admin_login() -> AuthMessage:
 
 
 async def user_login() -> AuthMessage:
+    """Login as user for test purpose"""
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         login_response = await ac.post(
             "/auth/login",

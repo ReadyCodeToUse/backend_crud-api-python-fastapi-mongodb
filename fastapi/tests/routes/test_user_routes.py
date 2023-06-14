@@ -5,6 +5,7 @@ from typing import List
 import pytest
 from httpx import AsyncClient
 from pydantic import parse_raw_as
+
 from src.db.collections.user import User
 from src.models.user import (
     CurrentUserDetails,
@@ -23,6 +24,7 @@ from tests import (
 
 @pytest.mark.asyncio
 async def test_register():
+    """Test user registration"""
 
     # DB connection.
     await build_db_client()
@@ -45,6 +47,7 @@ async def test_register():
 
 @pytest.mark.asyncio
 async def test_register_duplicate_email():
+    """Test user registration with duplicate email"""
 
     # DB connection.
     await build_db_client()
@@ -78,6 +81,7 @@ async def test_register_duplicate_email():
 
 @pytest.mark.asyncio
 async def test_register_duplicate_username():
+    """Test user registration with duplicate username"""
 
     # DB connection.
     await build_db_client()
@@ -111,6 +115,7 @@ async def test_register_duplicate_username():
 
 @pytest.mark.asyncio
 async def test_register_admin():
+    """Test admin registration"""
 
     # DB connection.
     await build_db_client()
@@ -122,9 +127,7 @@ async def test_register_admin():
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.post(
             "/user/register-roles",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
             json={
                 "username": "new_test_user_admin",
                 "email": "new_test_user_admin@email.com",
@@ -140,6 +143,7 @@ async def test_register_admin():
 
 @pytest.mark.asyncio
 async def test_register_admin_wrong_roles():
+    """Test admin registration with bad roles"""
 
     # DB connection.
     await build_db_client()
@@ -151,9 +155,7 @@ async def test_register_admin_wrong_roles():
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.post(
             "/user/register-roles",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
             json={
                 "username": "missing_role_user",
                 "email": "missing_role_user@email.com",
@@ -169,6 +171,7 @@ async def test_register_admin_wrong_roles():
 
 @pytest.mark.asyncio
 async def test_register_admin_missing_roles():
+    """Test admin registration with missing roles"""
 
     # DB connection.
     await build_db_client()
@@ -180,9 +183,7 @@ async def test_register_admin_missing_roles():
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.post(
             "/user/register-roles",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
             json={
                 "username": "missing_role_user",
                 "email": "missing_role_user@email.com",
@@ -197,6 +198,7 @@ async def test_register_admin_missing_roles():
 
 @pytest.mark.asyncio
 async def test_register_admin_duplicate_email():
+    """Test admin registration with duplicate email"""
 
     # DB connection.
     await build_db_client()
@@ -219,9 +221,7 @@ async def test_register_admin_duplicate_email():
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.post(
             "/user/register-roles",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
             json={
                 "username": "duplicate_test_user_admin",
                 "email": "new_test_user_admin@email.com",
@@ -237,6 +237,7 @@ async def test_register_admin_duplicate_email():
 
 @pytest.mark.asyncio
 async def test_register_admin_duplicate_username():
+    """Test admin registration with duplicate username"""
 
     # DB connection.
     await build_db_client()
@@ -259,9 +260,7 @@ async def test_register_admin_duplicate_username():
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.post(
             "/user/register-roles",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
             json={
                 "username": "new_test_user_admin",
                 "email": "duplicate_test_user_admin@email.com",
@@ -277,6 +276,7 @@ async def test_register_admin_duplicate_username():
 
 @pytest.mark.asyncio
 async def test_get_all_users():
+    """Test get all users db call."""
 
     # DB connection.
     await build_db_client()
@@ -288,19 +288,16 @@ async def test_get_all_users():
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.get(
             "/user/all",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
         )
 
     assert response.status_code == 200
-    assert IS_TYPED(
-        parse_raw_as(List[UserPartialDetails], response.text), List[UserPartialDetails]
-    )
+    assert IS_TYPED(parse_raw_as(List[UserPartialDetails], response.text), List[UserPartialDetails])
 
 
 @pytest.mark.asyncio
 async def test_get_all_user_as_admin():
+    """Test get all user from adim user, should expect more details"""
 
     # DB connection.
     await build_db_client()
@@ -312,9 +309,7 @@ async def test_get_all_user_as_admin():
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.get(
             "/user/all",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
         )
 
     assert response.status_code == 200
@@ -326,6 +321,7 @@ async def test_get_all_user_as_admin():
 
 @pytest.mark.asyncio
 async def test_get_users_count():
+    """Test get user count"""
 
     # DB connection.
     await build_db_client()
@@ -337,9 +333,7 @@ async def test_get_users_count():
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.get(
             "/user/count",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
         )
 
     assert response.status_code == 200
@@ -347,6 +341,7 @@ async def test_get_users_count():
 
 @pytest.mark.asyncio
 async def test_get_user_by_id_username():
+    """Test get user by id username"""
 
     # DB connection.
     await build_db_client()
@@ -361,9 +356,7 @@ async def test_get_user_by_id_username():
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.get(
             f"/user/username/{username}",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
         )
 
     assert response.status_code == 200
@@ -374,6 +367,7 @@ async def test_get_user_by_id_username():
 
 @pytest.mark.asyncio
 async def test_get_user_by_id_username_as_admin():
+    """Test get user by id username as admin"""
 
     # DB connection.
     await build_db_client()
@@ -388,9 +382,7 @@ async def test_get_user_by_id_username_as_admin():
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.get(
             f"/user/username/{username}",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
         )
 
     assert response.status_code == 200
@@ -401,6 +393,7 @@ async def test_get_user_by_id_username_as_admin():
 
 @pytest.mark.asyncio
 async def test_get_current_user():
+    """Test get current user"""
 
     # DB connection.
     await build_db_client()
@@ -411,10 +404,8 @@ async def test_get_current_user():
     # Endpoint test.
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.get(
-            f"/user/me",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            "/user/me",
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
         )
 
     assert response.status_code == 200
@@ -422,14 +413,15 @@ async def test_get_current_user():
     try:
         found = parse_raw_as(CurrentUserDetails, response.text)
         assert found.username == "user"  # The login has made with admin user.
-    except JSONDecodeError:
+    except JSONDecodeError as e:
         raise AssertionError(
             f"Impossible to parse to {CurrentUserDetails.__name__} json: {response.text}."
-        )
+        ) from e
 
 
 @pytest.mark.asyncio
 async def test_update_user():
+    """Test update user"""
 
     # DB connection.
     await build_db_client()
@@ -439,10 +431,8 @@ async def test_update_user():
 
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.put(
-            f"/user/username/user",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            "/user/username/user",
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
             json={
                 "username": "user1",
                 "email": "user@email.com",
@@ -461,6 +451,7 @@ async def test_update_user():
 
 @pytest.mark.asyncio
 async def test_update_user_bad_user():
+    """Test update user with bad user informations"""
 
     # DB connection.
     await build_db_client()
@@ -471,10 +462,8 @@ async def test_update_user_bad_user():
     # Endpoint test.
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.put(
-            f"/user/username/admin",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            "/user/username/admin",
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
             json={
                 "username": "admin1",
                 "email": "admin@email.com",
@@ -487,6 +476,7 @@ async def test_update_user_bad_user():
 
 @pytest.mark.asyncio
 async def test_update_user_bad_roles():
+    """Test udpate user with bad roles"""
 
     # DB connection.
     await build_db_client()
@@ -497,10 +487,8 @@ async def test_update_user_bad_roles():
     # Endpoint test.
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.put(
-            f"/user/username/admin",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            "/user/username/admin",
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
             json={
                 "username": "user",
                 "email": "user@email.com",
@@ -513,6 +501,7 @@ async def test_update_user_bad_roles():
 
 @pytest.mark.asyncio
 async def test_update_user_admin():
+    """Test udpate user admin"""
 
     # DB connection.
     await build_db_client()
@@ -523,10 +512,8 @@ async def test_update_user_admin():
     # Endpoint test.
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.put(
-            f"/user/username/user",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            "/user/username/user",
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
             json={
                 "username": "user1",
                 "email": "user@email.com",
@@ -545,6 +532,7 @@ async def test_update_user_admin():
 
 @pytest.mark.asyncio
 async def test_update_user_admin_missing():
+    """Test update user admin whose user not presetn"""
     # Try to update an user that does not exists.
 
     # DB connection.
@@ -556,10 +544,8 @@ async def test_update_user_admin_missing():
     # Endpoint test.
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.put(
-            f"/user/username/missing",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            "/user/username/missing",
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
             json={
                 "username": "user1",
                 "email": "user@email.com",
@@ -572,6 +558,7 @@ async def test_update_user_admin_missing():
 
 @pytest.mark.asyncio
 async def test_update_user_duplicate_uername_or_email():
+    """Test update user duplicate using already existing username or email"""
 
     # DB connection.
     await build_db_client()
@@ -582,10 +569,8 @@ async def test_update_user_duplicate_uername_or_email():
     # Endpoint test.
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.put(
-            f"/user/username/missing",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            "/user/username/missing",
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
             json={
                 "username": "admin",
                 "email": "user@email.com",
@@ -598,6 +583,7 @@ async def test_update_user_duplicate_uername_or_email():
 
 @pytest.mark.asyncio
 async def test_delete_user():
+    """Test user deletion"""
 
     # DB connection.
     await build_db_client()
@@ -611,10 +597,8 @@ async def test_delete_user():
     # Endpoint test.
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.delete(
-            f"/user/username/user",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            "/user/username/user",
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
         )
 
     assert response.status_code == 200
@@ -625,6 +609,7 @@ async def test_delete_user():
 
 @pytest.mark.asyncio
 async def test_delte_user_bad_user():
+    """Test bad user deletion"""
 
     # DB connection.
     await build_db_client()
@@ -635,10 +620,8 @@ async def test_delte_user_bad_user():
     # Endpoint test.
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.delete(
-            f"/user/username/admin",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            "/user/username/admin",
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
         )
 
     assert response.status_code == 403
@@ -646,6 +629,7 @@ async def test_delte_user_bad_user():
 
 @pytest.mark.asyncio
 async def test_delete_user_admin():
+    """Test delete user admin"""
 
     # DB connection.
     await build_db_client()
@@ -659,10 +643,8 @@ async def test_delete_user_admin():
     # Endpoint test.
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.delete(
-            f"/user/username/user",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            "/user/username/user",
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
         )
 
     assert response.status_code == 200
@@ -673,7 +655,7 @@ async def test_delete_user_admin():
 
 @pytest.mark.asyncio
 async def test_delete_user_admin_missing():
-    # Try to delete an user that does not exists.
+    """Test deleting admin user whose does not exists"""
 
     # DB connection.
     await build_db_client()
@@ -684,10 +666,8 @@ async def test_delete_user_admin_missing():
     # Endpoint test.
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.delete(
-            f"/user/username/missing",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            "/user/username/missing",
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
         )
 
     assert response.status_code == 404
@@ -695,6 +675,7 @@ async def test_delete_user_admin_missing():
 
 @pytest.mark.asyncio
 async def test_delete_last_admin():
+    """Test deleting last admin, should result in failure"""
 
     # DB connection.
     await build_db_client()
@@ -705,10 +686,8 @@ async def test_delete_last_admin():
     # Endpoint test.
     async with AsyncClient(app=fastapi_app, base_url=BASE_URL) as ac:
         response = await ac.delete(
-            f"/user/username/admin",
-            headers={
-                "Authorization": f"{login_response.token_type} {login_response.access_token}"
-            },
+            "/user/username/admin",
+            headers={"Authorization": f"{login_response.token_type} {login_response.access_token}"},
         )
 
     assert response.status_code == 406
